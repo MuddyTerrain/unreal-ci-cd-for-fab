@@ -12,7 +12,7 @@
     All detailed output is redirected to log files in the 'Logs' directory.
 .NOTES
     Author: Prajwal Shetty
-    Version: 1.7
+    Version: 1.8
 #>
 
 # --- PREPARATION ---
@@ -51,8 +51,9 @@ if (-not (Test-Path $Config.PluginSourceDirectory)) {
     exit 1
 }
 
-# Create output directories
-$OutputBuildsDir = Join-Path -Path $ScriptDir -ChildPath $Config.OutputDirectory
+# --- Create a timestamped output directory to avoid overwriting builds ---
+$Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$OutputBuildsDir = Join-Path -Path $ScriptDir -ChildPath "$($Config.OutputDirectory)_$Timestamp"
 $LogsDir = Join-Path -Path $ScriptDir -ChildPath "Logs"
 New-Item -Path $OutputBuildsDir -ItemType Directory -Force | Out-Null
 New-Item -Path $LogsDir -ItemType Directory -Force | Out-Null
@@ -67,7 +68,7 @@ Write-Host "Outputting to: $OutputBuildsDir"
 foreach ($EngineVersion in $Config.EngineVersions) {
     $CurrentStage = "SETUP"
     $EnginePath = "C:/Program Files/Epic Games/UE_$EngineVersion"
-    $LogFile = Join-Path -Path $LogsDir -ChildPath "BuildLog_UE_$EngineVersion.txt"
+    $LogFile = Join-Path -Path $LogsDir -ChildPath "BuildLog_UE_${EngineVersion}_$Timestamp.txt"
     $ProjectBuildDir = Join-Path -Path $OutputBuildsDir -ChildPath "UE_${EngineVersion}_ProjectHost"
     $PackageOutputDir = Join-Path -Path $OutputBuildsDir -ChildPath "PackagedPlugin_${EngineVersion}"
     $ZipFilePath = Join-Path -Path $OutputBuildsDir -ChildPath "$($Config.PluginName)_UE_$EngineVersion.zip"
@@ -119,23 +120,44 @@ foreach ($EngineVersion in $Config.EngineVersions) {
         # --- 5. CLEANUP STAGE ---
         $CurrentStage = "CLEANUP"
         Write-Host "[5/6] [CLEANUP] Deleting Binaries and Intermediate folders..."
-        # The actual packaged plugin is inside a 'HostProject/Plugins' subfolder created by UAT.
         $PackagedPluginPath = Join-Path $PackageOutputDir "HostProject/Plugins/$($Config.PluginName)"
-        Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Intermediate") -ErrorAction SilentlyContinue
-        Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Binaries") -ErrorAction SilentlyContinue
+        if(Test-Path $PackagedPluginPath) {
+            Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Intermediate") -ErrorAction SilentlyContinue
+            Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Binaries") -ErrorAction SilentlyContinue
+        } else {
+            # In some engine versions, the output path might be different.
+            $PackagedPluginPath = $PackageOutputDir
+            if(Test-Path $PackagedPluginPath) {
+                Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Intermediate") -ErrorAction SilentlyContinue
+                Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Binaries") -ErrorAction SilentlyContinue
+            } else {
+                 throw "Could not find the packaged plugin path to clean."
+            }
+        }
+        
 
         # --- 6. ZIP STAGE ---
         $CurrentStage = "ZIPPING"
         Write-Host "[6/6] [ZIP] Creating final zip archive..."
-        # FIX: The source path for zipping now correctly points to the plugin inside the HostProject folder.
+        # FIX: Correctly define the source path for zipping
         $ZipSourcePath = Join-Path $PackageOutputDir "HostProject/Plugins/$($Config.PluginName)"
-        Compress-Archive -Path "$ZipSourcePath/*" -DestinationPath $ZipFilePath -Force
-        if ($LASTEXITCODE -ne 0) { throw "Zipping failed." }
         
-        # Clean up the entire temporary package directory
-        Remove-Item -Recurse -Force -Path $PackageOutputDir
-        
-        Write-Host "[SUCCESS] UE $EngineVersion pipeline finished successfully!" -ForegroundColor Green
+        # In case the directory structure is different for some engine versions
+        if (-not (Test-Path $ZipSourcePath)) {
+            $ZipSourcePath = $PackageOutputDir
+        }
+
+        if (Test-Path $ZipSourcePath) {
+            Compress-Archive -Path "$ZipSourcePath/*" -DestinationPath $ZipFilePath -Force
+            if ($LASTEXITCODE -ne 0) { throw "Zipping failed." }
+            
+            # Clean up the entire temporary package directory AFTER zipping
+            Remove-Item -Recurse -Force -Path $PackageOutputDir
+            
+            Write-Host "[SUCCESS] UE $EngineVersion pipeline finished successfully!" -ForegroundColor Green
+        } else {
+            throw "Packaged plugin path not found for zipping: $ZipSourcePath"
+        }
 
     } catch {
         $GlobalSuccess = $false

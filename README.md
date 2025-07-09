@@ -4,26 +4,27 @@ A powerful local CI/CD pipeline for building, testing, and packaging Unreal Engi
 
 This tool automates the tedious process of multi-version support, ensuring your plugin is robust and ready for distribution on marketplaces like Fab.
 
-## Features
-
-* **Multi-Version Packaging:** Build your plugin for any number of specified Unreal Engine versions automatically.
-* **Config-Driven:** All paths and settings are managed in a simple `config.json` file.
-* **Automated Project Generation:** Includes a one-time script to generate a minimal C++ project to serve as a build host.
-* **Testable Project Creation:** For each engine version, the pipeline generates a clean, standalone host project with your plugin already installed, ready for manual testing or opening in an IDE.
-* **Automated Versioning:** Automatically updates the `.uplugin`'s `EngineVersion` for each build.
-* **Clean Packaging & Zipping:** Creates clean, marketplace-ready zip archives for each version, with `Binaries` and `Intermediate` folders removed.
-* **Detailed Logging:** Generates a separate, detailed log file for each build in a `Logs` directory, making it easy to debug failures.
-
 ## Compatibility
 
-* **Engine Versions:** This tool is confirmed to work with **Unreal Engine 5.2 and newer**. Due to C++ toolchain incompatibilities in older engine versions, UE 5.1 and below may fail to compile and are not officially supported by this script.
-* **Platform:** Currently designed for **Windows**.
+* **Engine Versions**: This tool currently only supports **Unreal Engine 5.1 and newer** as it has only been tested with these versions.
+* **Platform**: Currently designed for **Windows**.
 
 ## Prerequisites
 
-1.  **Windows & PowerShell:** This script is designed for Windows and uses PowerShell 5.1+, which comes pre-installed on Windows 10 and 11.
-2.  **Unreal Engine Versions:** You must have the desired engine versions installed via the Epic Games Launcher in their default locations (e.g., `C:\Program Files\Epic Games\UE_5.3`).
-3.  **Visual Studio:** The "Game development with C++" workload must be installed in Visual Studio.
+1.  **Windows & PowerShell**: Windows 10/11 with PowerShell 5.1+.
+
+2.  **Unreal Engine**: The required engine versions must be installed from the Epic Games Launcher.
+
+3.  **Visual Studio 2022**: You must have Visual Studio 2022 installed. From the **Visual Studio Installer**, ensure you have the following components:
+    * Under the **Workloads** tab, select **Game development with C++**.
+    * Under the **Individual components** tab, select the following items:
+        * `MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)`
+        * `MSVC v143 - VS 2022 C++ x64/x86 build tools (v14.36-17.6)` - **Required for UE 5.3**
+        * `MSVC v143 - VS 2022 C++ x64/x86 build tools (v14.34-17.4)` - **Required for UE 5.2**
+        * `MSVC v143 - VS 2022 C++ x64/x86 build tools (v14.32-17.2)` - **Required for UE 5.1**
+        * `Windows 11 SDK` or `Windows 10 SDK`
+
+> **Note**: To support multiple versions of Unreal Engine, you must install the specific MSVC C++ toolchains listed above. Relying only on the `(Latest)` toolchain will cause build failures on older engine versions. You can find the latest compatibility information in the [official Unreal Engine documentation](https://dev.epicgames.com/documentation/en-us/unreal-engine/setting-up-visual-studio-development-environment-for-cplusplus-projects-in-unreal-engine).
 
 ## Quick Start
 
@@ -70,6 +71,16 @@ Once configured, simply run the main packaging script from a PowerShell terminal
 ```
 
 The script will now loop through each engine version in your config, creating a testable host project and a distributable `.zip` file for each one in the `Builds` directory.
+
+## Features
+
+* **Multi-Version Packaging:** Build your plugin for any number of specified Unreal Engine versions automatically.
+* **Config-Driven:** All paths and settings are managed in a simple `config.json` file.
+* **Automated Project Generation:** Includes a one-time script to generate a minimal C++ project to serve as a build host.
+* **Testable Project Creation:** For each engine version, the pipeline generates a clean, standalone host project with your plugin already installed, ready for manual testing or opening in an IDE.
+* **Automated Versioning:** Automatically updates the `.uplugin`'s `EngineVersion` for each build.
+* **Clean Packaging & Zipping:** Creates clean, marketplace-ready zip archives for each version, with `Binaries` and `Intermediate` folders removed.
+* **Detailed Logging:** Generates a separate, detailed log file for each build in a `Logs` directory, making it easy to debug failures.
 
 ## Upcoming Features
 
