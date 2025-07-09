@@ -1,0 +1,36 @@
+# --- Unreal Engine ---
+Source/ThirdParty/
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+
+# --- IDEs ---
+.idea/
+.vs/
+.vscode/
+
+# --- Unreal Local CI/CD Tool Specific ---
+# Ignore the generated template project
+/TemplateProject/
+
+# Ignore the output directories
+/Builds/
+/Logs/
+
+# Ignore the user's actual configuration file
+# Users should copy the example and edit it.
+/config.json
+
+# Ignore executables and archives
+*.exe
+*.zip

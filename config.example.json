@@ -1,0 +1,15 @@
+{
+  "PluginName": "YourPluginName",
+  "PluginSourceDirectory": "C:/Path/To/Your/PluginSource",
+  "TemplateProjectDirectory": "./TemplateProject",
+  "OutputDirectory": "./Builds",
+  "EngineVersions": [
+    "5.2",
+    "5.3",
+    "5.4",
+    "5.5",
+    "5.6"
+  ],
+  "AutomationTestFilter": "Project.MyPlugin",
+  "RunTests": false
+}
