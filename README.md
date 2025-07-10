@@ -28,7 +28,7 @@ This basically states that, we as developers need to upload the plugin as source
 
 1.  **Windows & PowerShell**: Windows 10/11 with PowerShell 5.1+.
 2.  **Unreal Engine**: All the required engine versions must be installed via the Epic Games Launcher.
-    ![alt text](Docs/EngineVersions.png "Different Engine Versions")
+    ![alt text](Docs/EngineVersions.png "Different Engine Versions" | width=300)
 3.  **Visual Studio 2022**: You must have Visual Studio 2022 installed. From the **Visual Studio Installer**, ensure you have the following components:
     * Under the **Workloads** tab, select **Game development with C++**.
     * Under the **Individual components** tab, you must select the specific MSVC toolchains required for each engine version you intend to build for. These include:
