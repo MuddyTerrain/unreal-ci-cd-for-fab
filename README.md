@@ -26,12 +26,13 @@ This basically states that, we as developers need to upload the plugin as source
 
 ## Prerequisites
 
+<p align="center">
+  <img src="Docs/EngineVersions.png" alt="Different Engine Versions" width="450">
+</p>
+
 1.  **Windows & PowerShell**: Windows 10/11 with PowerShell 5.1+.
 2.  **Unreal Engine**: All the required engine versions must be installed via the Epic Games Launcher.
-  <p align="center">
-    <img src="Docs/EngineVersions.png" alt="Different Engine Versions" width="450">
-  </p>
-1.  **Visual Studio 2022**: You must have Visual Studio 2022 installed. From the **Visual Studio Installer**, ensure you have the following components:
+3.  **Visual Studio 2022**: You must have Visual Studio 2022 installed. From the **Visual Studio Installer**, ensure you have the following components:
     * Under the **Workloads** tab, select **Game development with C++**.
     * Under the **Individual components** tab, you must select the specific MSVC toolchains required for each engine version you intend to build for. These include:
         * `MSVC v143 - VS 2022 C++ x64/x86 build tools (v14.32-17.2)` - **Required for UE 5.1**
@@ -93,6 +94,7 @@ The script will now loop through each engine version in your config. For each ve
 > 4.3.7.3.a Plugin folders must not contain unused folders or local folders (such as Binaries, Build, Intermediate, or Saved),
 * **Automatic Cleanup:** All temporary build files and intermediate projects are automatically deleted after each successful run, leaving only the final, clean artifacts.
 * **Detailed Logging:** Generates a separate, detailed log file for each build in a `Logs` directory, making it easy to debug failures.
+* **Example Project Generation:** Can generate a separate zipped blueprint only example project for your plugin using the developement c++ project, can save a lot of time during version upgrades.
 
 ## Upcoming Features
 
