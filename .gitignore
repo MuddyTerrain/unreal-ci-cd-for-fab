@@ -25,6 +25,7 @@ Saved/
 
 # Ignore the output directories
 /Builds_*/
+/ExampleProjectBuild_*/
 /Logs/
 
 # Ignore the user's actual configuration file

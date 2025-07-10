@@ -34,16 +34,23 @@ Open `config.json` and edit the paths and settings to match your project:
 
 ```json
 {
-  "PluginName": "MyAwesomePlugin",
-  "PluginSourceDirectory": "C:/Dev/MyAwesomePlugin",
-  "UnrealEngineBasePath": "C:/Program Files/Epic Games",
+  "PluginName": "YourPluginName",
+  "PluginSourceDirectory": "C:/Path/To/Your/PluginSource",
+  "TemplateProjectDirectory": "./TemplateProject",
   "OutputDirectory": "./Builds",
+  "UnrealEngineBasePath": "C:/Program Files/Epic Games",
   "EngineVersions": [
+    "5.1",
     "5.2",
     "5.3",
-    "5.4"
-  ]
+    "5.4",
+    "5.5",
+    "5.6"
+  ],
+  "AutomationTestFilter": "Project.MyPlugin",
+  "RunTests": false
 }
+
 ```
 
 ### 2. Run the Pipeline
@@ -51,7 +58,7 @@ Open `config.json` and edit the paths and settings to match your project:
 Once configured, simply run the main packaging script from a PowerShell terminal in the root of the repository:
 
 ```powershell
-./package.ps1
+./package_fast.ps1
 ```
 
 The script will now loop through each engine version in your config. For each version, it will create:
