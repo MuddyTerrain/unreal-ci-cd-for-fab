@@ -24,7 +24,7 @@ Saved/
 /TemplateProject/
 
 # Ignore the output directories
-/Builds/
+/Builds_*/
 /Logs/
 
 # Ignore the user's actual configuration file
