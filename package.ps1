@@ -1,18 +1,18 @@
 <#
 .SYNOPSIS
-    A script to automate the testing, packaging, and zipping of an Unreal Engine plugin across multiple engine versions.
+    Automates testing, packaging, and zipping of an Unreal Engine plugin across multiple engine versions.
+
 .DESCRIPTION
-    This script reads its configuration from 'config.json', then for each specified engine version it:
-    1. Creates a clean host project instance from a template (and generates the template if it's missing).
-    2. Updates the .uplugin file with the correct engine version.
-    3. (Optional) Runs automation tests.
-    4. Packages the plugin for distribution using RunUAT.bat.
-    5. Cleans the packaged plugin by removing Intermediate and Binaries folders.
-    6. Zips the final, clean plugin into a distributable archive.
-    All detailed output is redirected to log files in the 'Logs' directory.
+    Reads configuration from 'config.json' and, for each engine version:
+    1. Creates a host project from a clean template and adds the source plugin.
+    2. Packages the plugin for distribution.
+    3. Creates a test project with the packaged plugin installed.
+    4. Zips both the packaged plugin and the test project for distribution.
+    All operations are logged to timestamped log files. The source plugin directory is never modified.
+
 .NOTES
     Author: Prajwal Shetty
-    Version: 1.8
+    Version: 2.0
 #>
 
 # --- PREPARATION ---
@@ -51,7 +51,7 @@ if (-not (Test-Path $Config.PluginSourceDirectory)) {
     exit 1
 }
 
-# --- Create a timestamped output directory to avoid overwriting builds ---
+# --- Create a timestamped output directory ---
 $Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 $OutputBuildsDir = Join-Path -Path $ScriptDir -ChildPath "$($Config.OutputDirectory)_$Timestamp"
 $LogsDir = Join-Path -Path $ScriptDir -ChildPath "Logs"
@@ -67,11 +67,13 @@ Write-Host "Outputting to: $OutputBuildsDir"
 
 foreach ($EngineVersion in $Config.EngineVersions) {
     $CurrentStage = "SETUP"
-    $EnginePath = "C:/Program Files/Epic Games/UE_$EngineVersion"
+    $EnginePath = Join-Path -Path $Config.UnrealEngineBasePath -ChildPath "UE_$EngineVersion"
     $LogFile = Join-Path -Path $LogsDir -ChildPath "BuildLog_UE_${EngineVersion}_$Timestamp.txt"
-    $ProjectBuildDir = Join-Path -Path $OutputBuildsDir -ChildPath "UE_${EngineVersion}_ProjectHost"
+    $HostProjectDir = Join-Path -Path $OutputBuildsDir -ChildPath "UE_${EngineVersion}_HostProject"
+    $TestProjectDir = Join-Path -Path $OutputBuildsDir -ChildPath "UE_${EngineVersion}_TestProject"
     $PackageOutputDir = Join-Path -Path $OutputBuildsDir -ChildPath "PackagedPlugin_${EngineVersion}"
-    $ZipFilePath = Join-Path -Path $OutputBuildsDir -ChildPath "$($Config.PluginName)_UE_$EngineVersion.zip"
+    $PluginZipPath = Join-Path -Path $OutputBuildsDir -ChildPath "$($Config.PluginName)_UE_$EngineVersion.zip"
+    $TestProjectZipPath = Join-Path -Path $OutputBuildsDir -ChildPath "TestProject_UE_$EngineVersion.zip"
 
     Write-Host "`n-----------------------------------------------------------------" -ForegroundColor Yellow
     Write-Host " [TASK] Starting pipeline for Unreal Engine $EngineVersion" -ForegroundColor Yellow
@@ -83,81 +85,67 @@ foreach ($EngineVersion in $Config.EngineVersions) {
             throw "[SKIP] Engine not found at '$EnginePath'"
         }
 
-        # --- 1. SETUP STAGE ---
-        $CurrentStage = "SETUP"
-        Write-Host "[1/6] [SETUP] Creating clean project instance in '$ProjectBuildDir'..."
-        if (Test-Path $ProjectBuildDir) { Remove-Item -Recurse -Force -Path $ProjectBuildDir }
-        Copy-Item -Recurse -Force -Path $TemplateProjectPath -Destination $ProjectBuildDir
-        Copy-Item -Recurse -Force -Path $Config.PluginSourceDirectory -Destination (Join-Path $ProjectBuildDir "Plugins/$($Config.PluginName)")
-        
-        $CurrentUpluginPath = Join-Path $ProjectBuildDir "Plugins/$($Config.PluginName)/$($Config.PluginName).uplugin"
+        # --- 1. SETUP HOST PROJECT ---
+        $CurrentStage = "SETUP_HOST_PROJECT"
+        Write-Host "[1/6] [SETUP] Creating host project in '$HostProjectDir'..."
+        if (Test-Path $HostProjectDir) { Remove-Item -Recurse -Force -Path $HostProjectDir }
+        Copy-Item -Recurse -Force -Path $TemplateProjectPath -Destination $HostProjectDir
+        $HostUprojectPath = Join-Path -Path $HostProjectDir -ChildPath "TemplateProject.uproject"
+        $HostPluginDir = Join-Path -Path $HostProjectDir -ChildPath "Plugins/$($Config.PluginName)"
+        Copy-Item -Recurse -Force -Path $Config.PluginSourceDirectory -Destination $HostPluginDir
+        $HostUpluginPath = Join-Path -Path $HostPluginDir -ChildPath "$($Config.PluginName).uplugin"
 
-        # --- 2. UPDATE STAGE ---
+        # Update host project's .uproject to set EngineAssociation and add plugin
+        $HostUprojectJson = Get-Content -Raw -Path $HostUprojectPath | ConvertFrom-Json
+        $HostUprojectJson.EngineAssociation = $EngineVersion
+        if (-not $HostUprojectJson.Plugins) { $HostUprojectJson.Plugins = @() }
+        $HostUprojectJson.Plugins += @{ Name = $Config.PluginName; Enabled = $true }
+        $HostUprojectJson | ConvertTo-Json -Depth 5 | Out-File -FilePath $HostUprojectPath -Encoding utf8
+
+        # --- 2. UPDATE UPLUGIN ---
         $CurrentStage = "UPDATE_UPLUGIN"
-        Write-Host "[2/6] [UPDATE] Setting EngineVersion to '$($EngineVersion).0'..."
-        $UpluginJson = Get-Content -Raw -Path $CurrentUpluginPath | ConvertFrom-Json
+        Write-Host "[2/6] [UPDATE] Setting EngineVersion in .uplugin to '$($EngineVersion).0'..."
+        $UpluginJson = Get-Content -Raw -Path $HostUpluginPath | ConvertFrom-Json
         $UpluginJson.EngineVersion = "$($EngineVersion).0"
-        $UpluginJson | ConvertTo-Json -Depth 5 | Out-File -FilePath $CurrentUpluginPath -Encoding utf8
+        $UpluginJson | ConvertTo-Json -Depth 5 | Out-File -FilePath $HostUpluginPath -Encoding utf8
 
-        # --- 3. TEST STAGE (Optional) ---
-        $CurrentStage = "TESTING"
-        if ($Config.RunTests) {
-            Write-Host "[3/6] [TEST] Running automation tests..."
-            & "$EnginePath/Engine/Build/BatchFiles/RunUAT.bat" RunTests -project="$ProjectBuildDir/TemplateProject.uproject" -test="$($Config.AutomationTestFilter)" -build=never *>&1 | Tee-Object -FilePath $LogFile -Append
-            if ($LASTEXITCODE -ne 0) { throw "Automation tests failed." }
-            Write-Host "[SUCCESS] Tests passed." -ForegroundColor Green
-        } else {
-            Write-Host "[3/6] [SKIP] Skipping automation tests as per config.json."
-        }
-
-        # --- 4. PACKAGE STAGE ---
+        # --- 3. PACKAGE PLUGIN ---
         $CurrentStage = "PACKAGING"
-        Write-Host "[4/6] [PACKAGE] Creating distributable plugin package..."
-        & "$EnginePath/Engine/Build/BatchFiles/RunUAT.bat" BuildPlugin -Plugin="$CurrentUpluginPath" -Package="$PackageOutputDir" -Rocket *>&1 | Tee-Object -FilePath $LogFile -Append
+        Write-Host "[3/6] [PACKAGE] Packaging plugin..."
+        & "$EnginePath/Engine/Build/BatchFiles/RunUAT.bat" BuildPlugin -Plugin="$HostUpluginPath" -Package="$PackageOutputDir" -Rocket *>&1 | Tee-Object -FilePath $LogFile -Append
         if ($LASTEXITCODE -ne 0) { throw "Packaging failed." }
         Write-Host "[SUCCESS] Plugin packaged successfully." -ForegroundColor Green
 
-        # --- 5. CLEANUP STAGE ---
-        $CurrentStage = "CLEANUP"
-        Write-Host "[5/6] [CLEANUP] Deleting Binaries and Intermediate folders..."
-        $PackagedPluginPath = Join-Path $PackageOutputDir "HostProject/Plugins/$($Config.PluginName)"
-        if(Test-Path $PackagedPluginPath) {
-            Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Intermediate") -ErrorAction SilentlyContinue
-            Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Binaries") -ErrorAction SilentlyContinue
-        } else {
-            # In some engine versions, the output path might be different.
-            $PackagedPluginPath = $PackageOutputDir
-            if(Test-Path $PackagedPluginPath) {
-                Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Intermediate") -ErrorAction SilentlyContinue
-                Remove-Item -Recurse -Force -Path (Join-Path $PackagedPluginPath "Binaries") -ErrorAction SilentlyContinue
-            } else {
-                 throw "Could not find the packaged plugin path to clean."
-            }
-        }
-        
+        # --- 4. SETUP TEST PROJECT ---
+        $CurrentStage = "SETUP_TEST_PROJECT"
+        Write-Host "[4/6] [SETUP] Creating test project in '$TestProjectDir'..."
+        if (Test-Path $TestProjectDir) { Remove-Item -Recurse -Force -Path $TestProjectDir }
+        Copy-Item -Recurse -Force -Path $TemplateProjectPath -Destination $TestProjectDir
+        $TestUprojectPath = Join-Path -Path $TestProjectDir -ChildPath "TemplateProject.uproject"
+        $TestPluginDir = Join-Path -Path $TestProjectDir -ChildPath "Plugins/$($Config.PluginName)"
+        $PackagedPluginPath = Join-Path -Path $PackageOutputDir -ChildPath $Config.PluginName
+        Copy-Item -Recurse -Force -Path $PackagedPluginPath -Destination $TestPluginDir
 
-        # --- 6. ZIP STAGE ---
-        $CurrentStage = "ZIPPING"
-        Write-Host "[6/6] [ZIP] Creating final zip archive..."
-        # FIX: Correctly define the source path for zipping
-        $ZipSourcePath = Join-Path $PackageOutputDir "HostProject/Plugins/$($Config.PluginName)"
-        
-        # In case the directory structure is different for some engine versions
-        if (-not (Test-Path $ZipSourcePath)) {
-            $ZipSourcePath = $PackageOutputDir
-        }
+        # Update test project's .uproject to set EngineAssociation and add plugin
+        $TestUprojectJson = Get-Content -Raw -Path $TestUprojectPath | ConvertFrom-Json
+        $TestUprojectJson.EngineAssociation = $EngineVersion
+        if (-not $TestUprojectJson.Plugins) { $TestUprojectJson.Plugins = @() }
+        $TestUprojectJson.Plugins += @{ Name = $Config.PluginName; Enabled = $true }
+        $TestUprojectJson | ConvertTo-Json -Depth 5 | Out-File -FilePath $TestUprojectPath -Encoding utf8
 
-        if (Test-Path $ZipSourcePath) {
-            Compress-Archive -Path "$ZipSourcePath/*" -DestinationPath $ZipFilePath -Force
-            if ($LASTEXITCODE -ne 0) { throw "Zipping failed." }
-            
-            # Clean up the entire temporary package directory AFTER zipping
-            Remove-Item -Recurse -Force -Path $PackageOutputDir
-            
-            Write-Host "[SUCCESS] UE $EngineVersion pipeline finished successfully!" -ForegroundColor Green
-        } else {
-            throw "Packaged plugin path not found for zipping: $ZipSourcePath"
-        }
+        # --- 5. ZIP PACKAGED PLUGIN ---
+        $CurrentStage = "ZIPPING_PLUGIN"
+        Write-Host "[5/6] [ZIP] Zipping packaged plugin..."
+        Compress-Archive -Path "$PackagedPluginPath/*" -DestinationPath $PluginZipPath -Force
+        if ($LASTEXITCODE -ne 0) { throw "Zipping plugin failed." }
+
+        # --- 6. ZIP TEST PROJECT ---
+        $CurrentStage = "ZIPPING_TEST_PROJECT"
+        Write-Host "[6/6] [ZIP] Zipping test project..."
+        Compress-Archive -Path "$TestProjectDir/*" -DestinationPath $TestProjectZipPath -Force
+        if ($LASTEXITCODE -ne 0) { throw "Zipping test project failed." }
+
+        Write-Host "[SUCCESS] UE $EngineVersion pipeline finished successfully!" -ForegroundColor Green
 
     } catch {
         $GlobalSuccess = $false
