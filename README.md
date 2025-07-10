@@ -29,7 +29,7 @@ This basically states that, we as developers need to upload the plugin as source
 1.  **Windows & PowerShell**: Windows 10/11 with PowerShell 5.1+.
 2.  **Unreal Engine**: All the required engine versions must be installed via the Epic Games Launcher.
   <p align="center">
-    <img src="Docs/EngineVersions.png" alt="Different Engine Versions" width="300">
+    <img src="Docs/EngineVersions.png" alt="Different Engine Versions" width="450">
   </p>
 1.  **Visual Studio 2022**: You must have Visual Studio 2022 installed. From the **Visual Studio Installer**, ensure you have the following components:
     * Under the **Workloads** tab, select **Game development with C++**.
@@ -104,7 +104,7 @@ This repo is also internally used to ship an actual plugin to Fab store called, 
 
 After each iteration the output will look something like this:
 <p align="center">
-  <img src="Docs/OutputSample.png" alt="Output Sample" width="300">
+  <img src="Docs/OutputSample.png" alt="Output Sample" width="450">
 </p>
 
 ## Contributing & Support
