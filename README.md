@@ -91,10 +91,34 @@ The script will now loop through each engine version in your config. For each ve
 * **Dynamic Build Configuration:** The script automatically handles the complex task of forcing Unreal Build Tool to use the correct MSVC compiler toolchain for each engine version.
 * **Automated Versioning:** Automatically updates the `.uplugin`'s `EngineVersion` for each build.
 * **Clean Packaging & Zipping:** Creates clean, marketplace-ready zip archives for each version. Only the essential `Source`, `Content`, `Resources`, and `.uplugin` files are included as per the [marketplace guidelines](https://support.fab.com/s/article/FAB-TECHNICAL-REQUIREMENTS?language=en_US).
-> 4.3.7.3.a Plugin folders must not contain unused folders or local folders (such as Binaries, Build, Intermediate, or Saved),
+    > 4.3.7.3.a Plugin folders must not contain unused folders or local folders (such as Binaries, Build, Intermediate, or Saved),
 * **Automatic Cleanup:** All temporary build files and intermediate projects are automatically deleted after each successful run, leaving only the final, clean artifacts.
 * **Detailed Logging:** Generates a separate, detailed log file for each build in a `Logs` directory, making it easy to debug failures.
-* **Example Project Generation:** Can generate a separate zipped blueprint only example project for your plugin using the developement c++ project, can save a lot of time during version upgrades.
+* **Intelligent Example Project Generation:** Creates a zipped, Blueprint-only example project with lightning speed. The script intelligently copies only the necessary project files, skipping all build artifacts and the main plugin's source folder from the start to ensure a fast and clean packaging process.
+
+---
+
+## Troubleshooting
+
+Here are a few common issues you might encounter:
+
+### 1. "Banned" C++ Compiler Error
+
+When building for a new engine version (e.g., UE 5.5), you might see an error like this:
+`UnrealBuildTool has banned the MSVC [version] toolchains due to compiler issues.`
+
+* **Cause**: Epic Games occasionally discovers bugs in a specific version of the Microsoft C++ compiler (MSVC) and will explicitly block it in the Unreal Build Tool to prevent instability.
+* **Solution**: Check the error message for the **recommended** toolchain version (e.g., `14.38.33130`). Open the **Visual Studio Installer**, go to the **Individual components** tab, and install that specific `MSVC v143` build tool version.
+
+### 2. Zipping Fails with "Stream was too long"
+
+The `package_example_project.ps1` script might fail with an error like:
+`Exception calling "Write" with "3" argument(s): "Stream was too long."`
+
+* **Cause**: This error occurs because PowerShell's built-in `Compress-Archive` command cannot create zip files that contain any single file **larger than 4GB**. Even if your project is small, temporary build artifacts or a large `.uasset` file can trigger this.
+* **Solution**: The easiest fix is to use a more robust compression tool. We recommend **[7-Zip](https://www.7-zip.org/)**. Install it and ensure it's added to your system's PATH. Then, you can modify the zipping command in the PowerShell script to use `7z.exe`, which supports the Zip64 format and can handle large files without issue.
+
+---
 
 ## Upcoming Features
 
