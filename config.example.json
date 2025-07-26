@@ -1,7 +1,6 @@
 {
   "PluginName": "YourPluginName",
   "PluginSourceDirectory": "C:/Path/To/Your/PluginSource",
-  "TemplateProjectDirectory": "./TemplateProject",
   "OutputDirectory": "./Builds",
   "UnrealEngineBasePath": "C:/Program Files/Epic Games",
   "EngineVersions": [
@@ -12,6 +11,19 @@
     "5.5",
     "5.6"
   ],
-  "AutomationTestFilter": "Project.MyPlugin",
-  "RunTests": false
+
+  "ExampleProject": {
+    "Generate": true,
+    "MasterProjectDirectory": "C:/Path/To/Your/MasterExampleProject_UE5.1",
+    "GenerateCppExample": true,
+    "GenerateBlueprintExample": true
+  },
+
+  "CloudUpload": {
+    "Enable": true,
+    "RcloneExePath": "C:/Users/YourUser/Downloads/SomeDir/rclone.exe",
+    "RcloneConfigPath": "C:/Users/YourUser/AppData/Roaming/rclone/rclone.conf",
+    "RemoteName": "MyGoogleDrive",
+    "RemoteFolderPath": "PluginBuilds/YourPluginName"
+  }
 }
