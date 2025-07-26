@@ -1,5 +1,8 @@
 # Local CI/CD for Unreal Code Plugins 🚀
 
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/KBWmkCKv5U)
+[![License: MIT](https://img.shields.io/badge/License-MIT-007EC7?style=for-the-badge)](LICENSE)
+
 A powerful local CI/CD pipeline for building, testing, and packaging Unreal Engine code plugins across multiple engine versions with a single command.
 
 This tool automates the tedious process of multi-version support, ensuring your plugin is robust and ready for distribution on marketplaces like Fab.com. We have actually use this repo in house to ship our own plugins to Fab store. 
