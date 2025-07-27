@@ -4,10 +4,11 @@
 .DESCRIPTION
     This script automates the compilation and packaging of an Unreal Engine plugin,
     producing clean, marketplace-ready .zip files for each specified engine version.
-    It skips the creation of test projects to speed up the process.
+    It uses smart copying to exclude .git, build artifacts, and other unnecessary files
+    for faster, cleaner builds.
 .NOTES
     Author: Prajwal Shetty
-    Version: 1.8 (Fast Version)
+    Version: 1.9 - Added smart copying with exclusions
 #>
 
 # --- PREPARATION ---
@@ -112,7 +113,26 @@ foreach ($EngineVersion in $Config.EngineVersions) {
         $HostUprojectPath = Join-Path -Path $HostProjectDir -ChildPath "HostProject.uproject"
         @{ FileVersion = 3; EngineAssociation = $EngineVersion; Category = ""; Description = ""; Plugins = @(@{ Name = $Config.PluginName; Enabled = $true }) } | ConvertTo-Json -Depth 5 | Out-File -FilePath $HostUprojectPath -Encoding utf8
         $HostPluginDir = Join-Path -Path $HostProjectDir -ChildPath "Plugins/$($Config.PluginName)"
-        Copy-Item -Recurse -Force -Path $Config.PluginSourceDirectory -Destination $HostPluginDir
+        
+        # Smart copy of plugin source (excluding build artifacts and VCS)
+        $ExcludeDirs = @(
+            ".git",
+            ".vs", 
+            "Binaries",
+            "Build", 
+            "Intermediate",
+            "Saved",
+            "DerivedDataCache",
+            "__pycache__",
+            ".vscode",
+            ".idea",
+            "Packages"
+        )
+        
+        # Use Robocopy for efficient copying with exclusions
+        $null = robocopy $Config.PluginSourceDirectory $HostPluginDir /E /XD $ExcludeDirs /NFL /NDL /NJH /NJS /nc /ns /np
+        # Note: Robocopy exit codes 0-7 are success, 8+ are errors
+        if ($LASTEXITCODE -gt 7) { throw "Failed to copy plugin source." }
         
         $HostUpluginPath = Join-Path -Path $HostPluginDir -ChildPath "$($Config.PluginName).uplugin"
         $UpluginJson = Get-Content -Raw -Path $HostUpluginPath | ConvertFrom-Json
