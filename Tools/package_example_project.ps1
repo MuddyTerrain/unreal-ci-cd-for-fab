@@ -39,7 +39,7 @@ foreach ($EngineVersion in $Config.EngineVersions) {
     $CurrentStage = "SETUP"
     $LogFile = Join-Path -Path $LogsDir -ChildPath "Log_ExampleProject_UE_${EngineVersion}.txt"
     $EnginePath = Join-Path -Path $Config.UnrealEngineBasePath -ChildPath "UE_$EngineVersion"
-    $TempProjectDir = Join-Path -Path $OutputDirectory -ChildPath "T_Ex_$EngineVersion"
+    $TempProjectDir = Join-Path -Path $OutputDirectory -ChildPath "Ex$($EngineVersion)"
     
     Write-Host "`n-----------------------------------------------------------------" -ForegroundColor Yellow
     Write-Host " [EXAMPLE] Processing for Unreal Engine $EngineVersion" -ForegroundColor Yellow
@@ -52,22 +52,37 @@ foreach ($EngineVersion in $Config.EngineVersions) {
         $CurrentStage = "COPY"
         Write-Host "[1/4] Copying master project (excluding build artifacts and VCS)..."
         
-        # Define directories to exclude during copy
+        # Define directories to exclude during copy for a clean distributable
         $ExcludeDirs = @(
             ".git",
-            ".vs", 
+            ".vs",
+            ".idea",
+            ".vscode",
             "Binaries",
-            "Build", 
+            "Build",
             "Intermediate",
             "Saved",
             "DerivedDataCache",
             "__pycache__",
-            ".vscode",
-            ".idea"
+            "Platforms"
         )
+        # Conditionally exclude the main plugin, allowing the example project to be shipped clean
+        if ($Config.ExampleProject.ExcludePlugin) {
+            $ExcludeDirs += "Plugins\$($Config.PluginName)"
+        }
         
-        # Add file exclusions from config
-        $ExcludeFiles = $Config.ExampleProject.ExcludeFiles
+        # Define a default list of file patterns to exclude, then add the ones from the config
+        $ExcludeFiles = @(
+            "*.sln",
+            "*.suo",
+            "*.VC.db",
+            "*.DotSettings.user",
+            ".vsconfig",
+            "GEMINI.md" # Internal development notes
+        )
+        if ($Config.ExampleProject.ExcludeFiles) {
+            $ExcludeFiles += $Config.ExampleProject.ExcludeFiles
+        }
 
         # Use Robocopy for efficient copying with exclusions
         $null = robocopy $MasterProjectDir $TempProjectDir /E /XD $ExcludeDirs /XF $ExcludeFiles /NFL /NDL /NJH /NJS /nc /ns /np
@@ -135,6 +150,12 @@ foreach ($EngineVersion in $Config.EngineVersions) {
         $CurrentStage = "PACKAGE_BP"
         if ($Config.ExampleProject.GenerateBlueprintExample) {
             Write-Host "[5/6] Creating and packaging Blueprint-only example..."
+            # Clean build artifacts before zipping to ensure a clean package
+            "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache" | ForEach-Object {
+                $pathToRemove = Join-Path $TempProjectDir $_ 
+                if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove }
+            }
+
             # Now, strip the C++ source from the already-upgraded project
             Remove-Item -Path (Join-Path $TempProjectDir "Source") -Recurse -Force -ErrorAction SilentlyContinue
             Remove-Item -Path (Join-Path $TempProjectDir "*.sln") -ErrorAction SilentlyContinue

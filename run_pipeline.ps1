@@ -55,7 +55,7 @@ $GlobalSuccess = $true
 # Define final and temporary directories
 $FinalOutputDir = Join-Path -Path $ScriptDir -ChildPath $Config.OutputDirectory
 $Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-$TempStagingDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "FabBuilding_Stage_$Timestamp"
+$TempStagingDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "FB_Stage_$Timestamp"
 
 # --- DRY RUN MODE ---
 if ($DryRun) {

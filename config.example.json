@@ -15,16 +15,15 @@
   "ExampleProject": {
     "Generate": true,
     "MasterProjectDirectory": "C:/Path/To/Your/MasterExampleProject_UE5.1",
+    "ExcludePlugin": true,
     "GenerateCppExample": true,
     "GenerateBlueprintExample": true,
-    "_comment_BlueprintOnlyExcludeFolders": "Folders to remove from Blueprint-only projects to prevent C++ errors",
-    "BlueprintOnlyExcludeFolders": [
-      "Content/CppExample",
-      "Content/SomeOtherCppFolder"
-    ],
     "ExcludeFiles": [
-      "Saved/Config/SomeFileToExclude.bin",
-      "Plugins/YourPluginName/Content/SomeOtherFile.bin"
+      "Docs/",
+      "*.log"
+    ],
+    "BlueprintOnlyExcludeFolders": [
+      "Source"
     ]
   },
 
