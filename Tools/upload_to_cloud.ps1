@@ -16,7 +16,8 @@ param (
 
 # --- PREPARATION ---
 $ScriptDir = $PSScriptRoot
-$ConfigPath = Join-Path -Path $ScriptDir -ChildPath "../config.json"
+$ProjectRoot = Split-Path -Parent $ScriptDir
+$ConfigPath = Join-Path -Path $ProjectRoot -ChildPath "config.json"
 $Config = Get-Content -Raw -Path $ConfigPath | ConvertFrom-Json
 
 $RcloneConfig = $Config.CloudUpload.RcloneConfigPath
@@ -117,7 +118,7 @@ try {
     Write-Host "    └── Logs/                      (Build logs)" -ForegroundColor Cyan
 
 } catch {
-    Write-Error "`n!!!! CLOUD UPLOAD FAILED !!!!"
-    Write-Error "!!!! Error: $($_.Exception.Message)"
-    $Global:LASTEXITCODE = 1 # Signal failure to master script
+    Write-Host "`n!!!! CLOUD UPLOAD FAILED !!!!" -ForegroundColor Red
+    Write-Host "!!!! Error: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
 }

@@ -21,10 +21,11 @@ param (
 
 # --- PREPARATION ---
 $ScriptDir = $PSScriptRoot
-$ConfigPath = Join-Path -Path $ScriptDir -ChildPath "../config.json"
+$ProjectRoot = Split-Path -Parent $ScriptDir
+$ConfigPath = Join-Path -Path $ProjectRoot -ChildPath "config.json"
 $Config = Get-Content -Raw -Path $ConfigPath | ConvertFrom-Json
 $MasterProjectDir = $Config.ExampleProject.MasterProjectDirectory
-$LogsDir = Join-Path -Path $OutputDirectory -ChildPath "Logs"
+$LogsDir = Join-Path -Path $ProjectRoot -ChildPath "Logs"
 New-Item -ItemType Directory -Path $LogsDir -Force | Out-Null
 
 if (-not (Test-Path $MasterProjectDir)) {
@@ -38,7 +39,7 @@ foreach ($EngineVersion in $Config.EngineVersions) {
     $CurrentStage = "SETUP"
     $LogFile = Join-Path -Path $LogsDir -ChildPath "Log_ExampleProject_UE_${EngineVersion}.txt"
     $EnginePath = Join-Path -Path $Config.UnrealEngineBasePath -ChildPath "UE_$EngineVersion"
-    $TempProjectDir = Join-Path -Path $OutputDirectory -ChildPath "Temp_Example_$EngineVersion"
+    $TempProjectDir = Join-Path -Path $OutputDirectory -ChildPath "T_Ex_$EngineVersion"
     
     Write-Host "`n-----------------------------------------------------------------" -ForegroundColor Yellow
     Write-Host " [EXAMPLE] Processing for Unreal Engine $EngineVersion" -ForegroundColor Yellow
@@ -65,8 +66,11 @@ foreach ($EngineVersion in $Config.EngineVersions) {
             ".idea"
         )
         
+        # Add file exclusions from config
+        $ExcludeFiles = $Config.ExampleProject.ExcludeFiles
+
         # Use Robocopy for efficient copying with exclusions
-        $null = robocopy $MasterProjectDir $TempProjectDir /E /XD $ExcludeDirs /NFL /NDL /NJH /NJS /nc /ns /np
+        $null = robocopy $MasterProjectDir $TempProjectDir /E /XD $ExcludeDirs /XF $ExcludeFiles /NFL /NDL /NJH /NJS /nc /ns /np
         # Note: Robocopy exit codes 0-7 are success, 8+ are errors
         if ($LASTEXITCODE -gt 7) { throw "Failed to copy master project." }
 
@@ -154,6 +158,17 @@ foreach ($EngineVersion in $Config.EngineVersions) {
                 $PluginJson.PSObject.Properties.Remove('Modules')
             }
             $PluginJson | ConvertTo-Json -Depth 10 | Out-File -FilePath $PluginUpluginPath -Encoding utf8
+            
+            # Remove configured C++ folders from Blueprint-only projects
+            if ($Config.ExampleProject.BlueprintOnlyExcludeFolders) {
+                foreach ($ExcludeFolder in $Config.ExampleProject.BlueprintOnlyExcludeFolders) {
+                    $FolderToRemove = Join-Path -Path $TempProjectDir -ChildPath $ExcludeFolder
+                    if (Test-Path $FolderToRemove) {
+                        Write-Host "Removing '$ExcludeFolder' from Blueprint-only project..."
+                        Remove-Item -Path $FolderToRemove -Recurse -Force
+                    }
+                }
+            }
             
             $FinalZipPath = Join-Path -Path $OutputDirectory -ChildPath "$($MasterProjectName)_BP_UE$($EngineVersion).zip"
             Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalZipPath -Force

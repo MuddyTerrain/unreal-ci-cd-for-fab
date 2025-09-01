@@ -1,0 +1,279 @@
+PS C:\Core\Code\Work\Muddy\FabBuilding> .\run_pipeline.ps1
+Validating configuration and prerequisites...
+Validating FabBuilding Configuration...
+=================================================================
+
+[1/6] Validating configuration file...
+[OK] Configuration file loaded successfully
+[OK] Required field 'OutputDirectory' is valid
+[OK] Required field 'PluginName' is valid
+[OK] Required field 'PluginSourceDirectory' is valid
+[OK] Required field 'UnrealEngineBasePath' is valid
+[OK] Required field 'EngineVersions' is valid
+
+[2/6] Validating plugin configuration...
+[OK] Plugin source directory exists
+[OK] Plugin .uplugin file is valid
+[OK] Plugin version: 1.3
+
+[3/6] Validating Unreal Engine installations...
+[OK] Unreal Engine 5.1 found
+[OK] Unreal Engine 5.2 found
+
+[4/6] Validating example project configuration...
+[OK] Master project directory exists
+[OK] Found .uproject file: GenAIExample.uproject
+
+[5/6] Validating cloud upload configuration...
+[OK] rclone executable found
+[OK] rclone is functional
+[OK] rclone config file found
+
+[6/6] Validating system prerequisites...
+[OK] PowerShell version: 5.1.26100.4768
+[OK] Robocopy is available
+
+=================================================================
+VALIDATION SUMMARY:
+[SUCCESS] Configuration validation PASSED!
+Your setup is ready for production use.
+=================================================================
+ STARTING MASTER PIPELINE (Output to: C:\Core\Code\Work\Muddy\FabBuilding\.\Builds_20250901_152835)
+=================================================================
+
+[TASK 1/3] Skipping plugin packaging (SkipPluginBuild is true in config).
+
+[TASK 2/3] Running example project packaging script...
+
+-----------------------------------------------------------------
+ [EXAMPLE] Processing for Unreal Engine 5.1
+-----------------------------------------------------------------
+[1/4] Copying master project (excluding build artifacts and VCS)...
+[2/4] Compiling plugin for UE 5.1 before upgrade...
+Running AutomationTool...
+Using bundled DotNet SDK version: 6.0.302
+Starting AutomationTool...
+Parsing command line: BuildPlugin -Plugin=C:\Core\Code\Work\Muddy\FabBuilding\.\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin -Package=C:\Core\Code\Work\Muddy\FabBuilding\.\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages -TargetPlatforms=Win64 -Rocket
+Initializing script modules...
+Total script module initialization time: 0.45 s.
+Executing commands...
+Copying 133 file(s) using max 64 thread(s)
+Reading plugin from C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin...
+Building plugin for host platforms: Win64
+Running: C:\Program Files\Epic Games\UE_5.1\Engine\Binaries\ThirdParty\DotNet\6.0.302\windows\dotnet.exe "C:\Program Files\Epic Games\UE_5.1\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UnrealEditor Win64 Development -Project=C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\HostProject.uproject -plugin=C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin -iwyu -noubtmakefiles -manifest=C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Saved\Manifest-UnrealEditor-Win64-Development.xml -nohotreload -log="C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.1\UBT-UnrealEditor-Win64-Development.txt"
+Log file: C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.1\UBT-UnrealEditor-Win64-Development.txt
+Parsing headers for UnrealEditor
+  Running Internal UnrealHeaderTool C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\HostProject.uproject C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Intermediate\Build\Win64\UnrealEditor\Development\UnrealEditor.uhtmanifest -WarningsAsErrors -installed
+Total of 98 written
+Reflection code generated for UnrealEditor in 1.2793511 seconds
+Writing manifest to C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Saved\Manifest-UnrealEditor-Win64-Development.xml
+Building UnrealEditor...
+Using Visual Studio 2022 14.32.31342 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
+  Executing up to 8 processes, one per physical core
+  Requested 1.5 GB free memory per action, 7.86 GB available: limiting max parallel actions to 5
+Building 23 actions with 5 processes...
+[1/23] Resource Default.rc2
+[2/23] Resource Default.rc2
+[3/23] Resource Default.rc2
+[4/23] Resource Default.rc2
+[5/23] Compile SharedPCH.UnrealEd.ShadowErrors.cpp
+[6/23] Compile Module.GenAIEditor.cpp
+[7/23] Link UnrealEditor-GenAIEditor.lib
+   Creating library C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.lib and object C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.exp
+[8/23] Compile SharedPCH.Engine.ShadowErrors.cpp
+[9/23] Compile Module.GenAIBlueprintNodes.cpp
+[10/23] Compile Module.GenAI.1_of_5.cpp
+[11/23] Compile Module.GenAI.3_of_5.cpp
+[12/23] Link UnrealEditor-GenAIBlueprintNodes.lib
+   Creating library C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.lib and object C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.exp
+[13/23] Compile Module.GenAI.2_of_5.cpp
+[14/23] Compile Module.GenAI.5_of_5.cpp
+[15/23] Compile Module.GenAI.4_of_5.cpp
+[16/23] Link UnrealEditor-GenAI.lib
+   Creating library C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.lib and object C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.exp
+[17/23] Compile Module.GenAITests.cpp
+[18/23] Link UnrealEditor-GenAITests.lib
+   Creating library C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.lib and object C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.exp
+[19/23] Link UnrealEditor-GenAIBlueprintNodes.dll
+LINK : fatal error LNK1104: cannot open file 'C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.suppressed.lib'
+[20/23] Link UnrealEditor-GenAIEditor.dll
+   Creating library C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.suppressed.lib and object C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.suppressed.exp
+[21/23] Link UnrealEditor-GenAI.dll
+   Creating library C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.suppressed.lib and object C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.suppressed.exp
+[22/23] Link UnrealEditor-GenAITests.dll
+   Creating library C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.suppressed.lib and object C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.1\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.suppressed.exp
+[23/23] WriteMetadata UnrealEditor.target cancelled
+Took 89.80109279999999s to run dotnet.exe, ExitCode=6
+UnrealBuildTool failed. See log for more details. (C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.1\UBT-UnrealEditor-Win64-Development.txt)
+AutomationTool executed for 0h 1m 31s
+AutomationTool exiting with ExitCode=6 (6)
+BUILD FAILED
+C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1 :
+!!!! EXAMPLE PROJECT FAILED for UE 5.1 at stage: COMPILE_PLUGIN !!!!
+At C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1:109 char:9
++         & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirec ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,package_example_project.ps1
+
+C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1 : !!!! Error: Failed to compile plugin for UE 5.1.
+At C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1:109 char:9
++         & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirec ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,package_example_project.ps1
+
+C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1 : !!!! See log for details: C:\Core\Code\Work\Muddy\FabBuilding\.\Builds_20250901_152835\Logs\Log_ExampleProject_UE_5.1.txt
+At C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1:109 char:9
++         & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirec ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,package_example_project.ps1
+
+Cleaning up temporary files for UE 5.1...
+
+-----------------------------------------------------------------
+ [EXAMPLE] Processing for Unreal Engine 5.2
+-----------------------------------------------------------------
+[1/4] Copying master project (excluding build artifacts and VCS)...
+[2/4] Compiling plugin for UE 5.2 before upgrade...
+Running AutomationTool...
+Using bundled DotNet SDK version: 6.0.302
+Starting AutomationTool...
+Parsing command line: BuildPlugin -Plugin=C:\Core\Code\Work\Muddy\FabBuilding\.\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin -Package=C:\Core\Code\Work\Muddy\FabBuilding\.\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages -TargetPlatforms=Win64 -Rocket
+Initializing script modules...
+Total script module initialization time: 0.21 s.
+Executing commands...
+Copying 133 file(s) using max 64 thread(s)
+Reading plugin from C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin...
+Building plugin for host platforms: Win64
+Running: C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\ThirdParty\DotNet\6.0.302\windows\dotnet.exe "C:\Program Files\Epic Games\UE_5.2\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UnrealEditor Win64 Development -Project=C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\HostProject.uproject -plugin=C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin -noubtmakefiles -manifest=C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Saved\Manifest-UnrealEditor-Win64-Development.xml -nohotreload -log="C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.2\UBT-UnrealEditor-Win64-Development.txt"
+Log file: C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.2\UBT-UnrealEditor-Win64-Development.txt
+Parsing headers for UnrealEditor
+  Running Internal UnrealHeaderTool C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\HostProject.uproject C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Intermediate\Build\Win64\UnrealEditor\Development\UnrealEditor.uhtmanifest -WarningsAsErrors -installed
+Total of 98 written
+Reflection code generated for UnrealEditor in 1.5375938 seconds
+WARNING: Absolute path 'C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.suppressed.lib' has length '264' which is greater than MAX_PATH (260) and may cause unexpected errors with the MSVC toolchain.
+Writing manifest to C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Saved\Manifest-UnrealEditor-Win64-Development.xml
+The following output paths are longer than 260 characters. Please move the engine to a directory with a shorter path.
+[260 characters] C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\Module.GenAIBlueprintNodes.cpp.obj.response
+[262 characters] C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.lib.response
+[262 characters] C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.dll.response
+Took 30.5910832s to run dotnet.exe, ExitCode=6
+UnrealBuildTool failed. See log for more details. (C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.2\UBT-UnrealEditor-Win64-Development.txt)
+AutomationTool executed for 0h 0m 31s
+AutomationTool exiting with ExitCode=6 (6)
+BUILD FAILED
+C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1 :
+!!!! EXAMPLE PROJECT FAILED for UE 5.2 at stage: COMPILE_PLUGIN !!!!
+At C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1:109 char:9
++         & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirec ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,package_example_project.ps1
+
+C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1 : !!!! Error: Failed to compile plugin for UE 5.2.
+At C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1:109 char:9
++         & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirec ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,package_example_project.ps1
+
+C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1 : !!!! See log for details: C:\Core\Code\Work\Muddy\FabBuilding\.\Builds_20250901_152835\Logs\Log_ExampleProject_UE_5.2.txt
+At C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1:109 char:9
++         & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirec ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,package_example_project.ps1
+
+Cleaning up temporary files for UE 5.2...
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Intermediate\Build\BuildRules\HostProjectModuleRules.dll: Access to the path
+'HostProjectModuleRules.dll' is denied.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : PermissionDenied: (HostProjectModuleRules.dll:FileInfo) [Remove-Item], UnauthorizedAccessException
+    + FullyQualifiedErrorId : RemoveFileSystemItemUnAuthorizedAccess,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Intermediate\Build\BuildRules: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (BuildRules:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Intermediate\Build: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (Build:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject\Intermediate: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (Intermediate:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages\HostProject: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (HostProject:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal\Packages: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (Packages:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins\GenAIForUnreal: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (GenAIForUnreal:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2\Plugins: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (Plugins:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot remove item C:\Core\Code\Work\Muddy\FabBuilding\Builds_20250901_152835\Temp_Example_5.2: The directory is not empty.
+At C:\Core\Code\Work\Muddy\FabBuilding\Tools\package_example_project.ps1:187 char:42
++ ... TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : WriteError: (C:\Core\Code\Wo...emp_Example_5.2:DirectoryInfo) [Remove-Item], IOException
+    + FullyQualifiedErrorId : RemoveFileSystemItemIOError,Microsoft.PowerShell.Commands.RemoveItemCommand
+C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1 :
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+At line:1 char:1
++ .\run_pipeline.ps1
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,run_pipeline.ps1
+
+C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1 : !!!! MASTER PIPELINE FAILED !!!!
+At line:1 char:1
++ .\run_pipeline.ps1
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,run_pipeline.ps1
+
+C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1 : !!!! Error: Example project packaging failed.
+At line:1 char:1
++ .\run_pipeline.ps1
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,run_pipeline.ps1
+
+C:\Core\Code\Work\Muddy\FabBuilding\run_pipeline.ps1 : !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+At line:1 char:1
++ .\run_pipeline.ps1
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+    + FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException,run_pipeline.ps1
+
+
+=================================================================
+ One or more tasks in the master pipeline FAILED.
+=================================================================
+Press Enter to exit:

@@ -12,6 +12,16 @@ This tool automates the tedious process of multi-version support, ensuring your 
 > 1) Do not use it without version control. ⚠️
 > 2) Contributions are welcome, especially for non-windows platforms.🤝
 
+## Problem Statement 
+Here is snippet from [Fab.com](https://fab.com)'s submission [guidelines](https://support.fab.com/s/article/FAB-TECHNICAL-REQUIREMENTS?language=en_US):  
+> 4.3.6.2 Compilation:
+
+> 4.3.6.2.a Code plugins must generate no errors or consequential warnings.
+> 
+> 4.3.6.2.b Plugins will be <code style="color : orangered">distributed with the binaries built by Epic’s compilation toolchain</code>, so publishers must ensure that final debugging has been completed by clicking "Package..." on their plugin in the Plugins windows of the editor to test compilation before sending in a new  plugin version. Publishers can also run this command from installed binary builds of each Unreal Engine version they’d like to compile their  plugin for: Engine\Build\BatchFiles\RunUAT.bat BuildPlugin -Plugin=[Path to .uplugin file, must be outside engine directory] -Package=[Output > directory] -Rocket
+
+This basically states that, we as developers need to upload the plugin as source files and not built binaries, then epic will build the binaries for us and ship it to buyers computers. 
+
 ## Core Philosophy: Develop Low, Upgrade High
 
 To support multiple engine versions correctly, this pipeline follows the industry-standard practice:
@@ -22,15 +32,6 @@ To support multiple engine versions correctly, this pipeline follows the industr
 
 This ensures that users on any supported engine version get an example project that opens and works perfectly, as Unreal Engine does not support opening assets from a newer engine version in an older one.
 
-## Compatibility
-Here is snippet from [Fab.com](https://fab.com)'s submission [guidelines](https://support.fab.com/s/article/FAB-TECHNICAL-REQUIREMENTS?language=en_US):  
-> 4.3.6.2 Compilation:
-
-> 4.3.6.2.a Code plugins must generate no errors or consequential warnings.
-> 
-> 4.3.6.2.b Plugins will be <code style="color : orangered">distributed with the binaries built by Epic’s compilation toolchain</code>, so publishers must ensure that final debugging has been completed by clicking "Package..." on their plugin in the Plugins windows of the editor to test compilation before sending in a new  plugin version. Publishers can also run this command from installed binary builds of each Unreal Engine version they’d like to compile their  plugin for: Engine\Build\BatchFiles\RunUAT.bat BuildPlugin -Plugin=[Path to .uplugin file, must be outside engine directory] -Package=[Output > directory] -Rocket
-
-This basically states that, we as developers need to upload the plugin as source files and not built binaries, then epic will build the binaries for us and ship it to buyers computers. 
 
 ## Compatibility
 
@@ -56,7 +57,16 @@ This basically states that, we as developers need to upload the plugin as source
 
 ## Quick Start
 
-### 1. Create Your Configuration
+### 1. Validate Your System
+
+Before configuring, ensure your system meets all requirements:
+
+```powershell
+# Validate system prerequisites (without config file)
+.\Tools\validate_config.ps1 -ConfigPath "config.example.json" -SkipEngineValidation
+```
+
+### 2. Create Your Configuration
 
 Copy the `config.example.json` file and rename it to `config.json`. This file is ignored by git and will contain your local settings.
 
@@ -87,6 +97,11 @@ Open `config.json` and edit it to match your project:
     "RcloneConfigPath": "C:/Users/YourUser/AppData/Roaming/rclone/rclone.conf",
     "RemoteName": "MyGoogleDrive",
     "RemoteFolderPath": "PluginBuilds/YourPluginName"
+  },
+
+  "BuildOptions": {
+    "_comment": "Advanced options for debugging the pipeline.",
+    "SkipPluginBuild": false
   }
 }
 ```
@@ -101,12 +116,31 @@ If you want to automatically upload your packaged files:
    * **For Google Drive**: When prompted for `client_id`, it's recommended to create your own for better performance. See [rclone's Google Drive guide](https://rclone.org/drive/#making-your-own-client-id) for step-by-step instructions.
 4. Update the `CloudUpload` section in your `config.json` with the correct paths and remote name.
 
-### 3. Run the Master Pipeline
+### 3. Validate Your Configuration
+
+Before running the pipeline, validate your configuration:
+
+```powershell
+# Validate complete configuration
+.\Tools\validate_config.ps1 -ConfigPath "config.json"
+
+# Or run a dry-run to see what would be built
+.\run_pipeline.ps1 -DryRun
+```
+
+### 4. Run the Master Pipeline
 
 Once configured, run the master script from a PowerShell terminal in the root of the repository:
 
 ```powershell
-./run_pipeline.ps1
+# Full pipeline with validation
+.\run_pipeline.ps1
+
+# Skip validation (not recommended for production)
+.\run_pipeline.ps1 -SkipValidation
+
+# Dry run to see what would be built
+.\run_pipeline.ps1 -DryRun
 ```
 
 The script will execute all configured tasks, creating plugin packages and version-specific example projects in a timestamped output folder (e.g., `Builds_20250726_183000`).
@@ -123,6 +157,7 @@ The script will execute all configured tasks, creating plugin packages and versi
 * **Clean & Compliant Packaging**: Creates clean, marketplace-ready zip archives, excluding all temporary files like `Binaries`, `Intermediate`, and `Saved` folders, as per marketplace guidelines.
 * **Detailed Logging**: Generates separate logs for each task in a `Logs` subfolder inside the main output directory, making it easy to debug failures.
 * **Automatic Cleanup**: All temporary projects and build files are deleted after each run.
+* **Debug Options**: The `config.json` includes a `BuildOptions` section that allows you to skip certain parts of the pipeline for faster testing and debugging (e.g., `SkipPluginBuild`).
 
 ## Understanding rclone (For Cloud Uploads)
 
@@ -149,6 +184,30 @@ It's a command-line program for managing files on cloud storage. It's a single e
 
 * **Cause**: PowerShell's `Compress-Archive` can't handle files larger than 4GB.
 * **Solution**: We recommend installing [7-Zip](https://www.7-zip.org/). You can then modify the `Compress-Archive` commands in the scripts to use the `7z.exe` command-line tool, which has no file size limits.
+
+### Configuration Validation Fails:
+
+* **Solution**: Run validation to see specific issues: `.\Tools\validate_config.ps1 -ConfigPath "config.json"`
+* Common issues:
+  - Missing Unreal Engine installations at specified paths
+  - Incorrect plugin source directory path
+  - Missing rclone executable (if cloud upload enabled)
+  - Invalid JSON syntax in config.json
+
+### Pipeline Fails During Build:
+
+* **Check build logs**: Look in the `Tools/Logs/` directory for detailed error messages
+* **Common causes**:
+  - Plugin source has compilation errors
+  - Missing Visual Studio toolchains for target engine versions
+  - Insufficient disk space for temporary build files
+  - Antivirus software blocking file operations
+
+### Example Project Packaging Fails:
+
+* **Ensure master project works**: Open the master project in UE manually first
+* **Check engine association**: Master project should be developed in the oldest target engine version
+* **Verify plugin compatibility**: Plugin should compile successfully for all target versions
 
 ## Contributing & Support
 

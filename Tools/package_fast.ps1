@@ -6,17 +6,27 @@
     producing clean, marketplace-ready .zip files for each specified engine version.
     It uses smart copying to exclude .git, build artifacts, and other unnecessary files
     for faster, cleaner builds.
+.PARAMETER OutputDirectory
+    Optional. Specifies the output directory for build artifacts. If not provided, 
+    creates a timestamped directory in the project root.
 .NOTES
     Author: Prajwal Shetty
-    Version: 1.9 - Added smart copying with exclusions
+    Version: 1.10 - Fixed output directory structure and added parameter support
 #>
+
+[CmdletBinding()]
+param (
+    [Parameter(Mandatory=$false)]
+    [string]$OutputDirectory
+)
 
 # --- PREPARATION ---
 $ScriptDir = $PSScriptRoot
+$ProjectRoot = Split-Path -Parent $ScriptDir
 $GlobalSuccess = $true
 
 # Load configuration
-$ConfigPath = Join-Path -Path $ScriptDir -ChildPath "config.json"
+$ConfigPath = Join-Path -Path $ProjectRoot -ChildPath "config.json"
 if (-not (Test-Path $ConfigPath)) {
     Write-Error "Configuration file not found at '$ConfigPath'."
     exit 1
@@ -32,10 +42,14 @@ if (-not (Test-Path $SourceUpluginPath)) {
 $PluginInfo = Get-Content -Raw -Path $SourceUpluginPath | ConvertFrom-Json
 $PluginVersion = $PluginInfo.VersionName
 
-# --- Create timestamped output directory ---
-$Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-$OutputBuildsDir = Join-Path -Path $ScriptDir -ChildPath "$($Config.OutputDirectory)_$Timestamp"
-$LogsDir = Join-Path -Path $ScriptDir -ChildPath "Logs"
+# --- Create output directory ---
+if ($OutputDirectory) {
+    $OutputBuildsDir = $OutputDirectory
+} else {
+    $Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $OutputBuildsDir = Join-Path -Path $ProjectRoot -ChildPath "$($Config.OutputDirectory)_$Timestamp"
+}
+$LogsDir = Join-Path -Path $ProjectRoot -ChildPath "Logs"
 New-Item -Path $OutputBuildsDir -ItemType Directory -Force | Out-Null
 New-Item -Path $LogsDir -ItemType Directory -Force | Out-Null
 
@@ -130,9 +144,12 @@ foreach ($EngineVersion in $Config.EngineVersions) {
         )
         
         # Use Robocopy for efficient copying with exclusions
-        $null = robocopy $Config.PluginSourceDirectory $HostPluginDir /E /XD $ExcludeDirs /NFL /NDL /NJH /NJS /nc /ns /np
+        Write-Host "Copying plugin source (excluding build artifacts)..."
+        robocopy $Config.PluginSourceDirectory $HostPluginDir /E /XD $ExcludeDirs /NFL /NDL /NJH /NJS /nc /ns /np
         # Note: Robocopy exit codes 0-7 are success, 8+ are errors
-        if ($LASTEXITCODE -gt 7) { throw "Failed to copy plugin source." }
+        if ($LASTEXITCODE -gt 7) { 
+            throw "Failed to copy plugin source. Robocopy exit code: $LASTEXITCODE" 
+        }
         
         $HostUpluginPath = Join-Path -Path $HostPluginDir -ChildPath "$($Config.PluginName).uplugin"
         $UpluginJson = Get-Content -Raw -Path $HostUpluginPath | ConvertFrom-Json
@@ -194,11 +211,11 @@ foreach ($EngineVersion in $Config.EngineVersions) {
 
     } catch {
         $GlobalSuccess = $false
-        Write-Error "`n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        Write-Error "!!!! BUILD FAILED for UE $EngineVersion at stage: $CurrentStage !!!!`n"
-        Write-Error "!!!! Error: $($_.Exception.Message)"
-        Write-Error "!!!! Check the log file for details: $LogFile"
-        Write-Error "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        Write-Host "`n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" -ForegroundColor Red
+        Write-Host "!!!! BUILD FAILED for UE $EngineVersion at stage: $CurrentStage !!!!" -ForegroundColor Red
+        Write-Host "!!!! Error: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "!!!! Check the log file for details: $LogFile" -ForegroundColor Red
+        Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" -ForegroundColor Red
     } finally {
         # --- Cleanup ---
         Write-Host "Cleaning up temporary files for UE $EngineVersion..."
@@ -216,9 +233,8 @@ Write-Host "`n================================================================="
 if ($GlobalSuccess) {
     Write-Host " All packages created SUCCESSFULLY!" -ForegroundColor Green
     Write-Host "Your zip files are ready for upload in '$OutputBuildsDir'" -ForegroundColor Green
+    exit 0
 } else {
     Write-Host " One or more tasks FAILED. Please review the logs." -ForegroundColor Red
+    exit 1
 }
-Write-Host "================================================================="
-
-Read-Host "Press Enter to exit"
