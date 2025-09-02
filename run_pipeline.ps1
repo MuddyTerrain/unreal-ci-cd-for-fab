@@ -55,7 +55,7 @@ $GlobalSuccess = $true
 # Define final and temporary directories
 $FinalOutputDir = Join-Path -Path $ScriptDir -ChildPath $Config.OutputDirectory
 $Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-$TempStagingDir = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath "FB_Stage_$Timestamp"
+$TempStagingDir = Join-Path -Path $ScriptDir -ChildPath ".temp_stage_$Timestamp"
 
 # --- DRY RUN MODE ---
 if ($DryRun) {
@@ -105,36 +105,32 @@ Write-Host "================================================================="
 try {
     # --- 1. PACKAGE PLUGIN ---
     if ($Config.BuildOptions -and $Config.BuildOptions.SkipPluginBuild) {
-        Write-Host "`n[TASK 1/4] Skipping plugin packaging (SkipPluginBuild is true in config)." -ForegroundColor Yellow
+        Write-Host "`n[TASK 1/3] Skipping plugin packaging (SkipPluginBuild is true in config)." -ForegroundColor Yellow
     } else {
-        Write-Host "`n[TASK 1/4] Running plugin packaging script..." -ForegroundColor Cyan
-        & "$ScriptDir/Tools/package_fast.ps1" -OutputDirectory $TempStagingDir
+        Write-Host "`n[TASK 1/3] Running plugin packaging script..." -ForegroundColor Cyan
+        & "$ScriptDir/Tools/package_fast.ps1" -OutputDirectory $FinalOutputDir -UseCache:$UseCache
         if ($LASTEXITCODE -ne 0) { throw "Plugin packaging failed." }
     }
 
     # --- 2. PACKAGE EXAMPLE PROJECTS ---
     if ($Config.ExampleProject -and $Config.ExampleProject.Generate) {
-        Write-Host "`n[TASK 2/4] Running example project packaging script..." -ForegroundColor Cyan
-        & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirectory $TempStagingDir
+        Write-Host "`n[TASK 2/3] Running example project packaging script..." -ForegroundColor Cyan
+        & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirectory $TempStagingDir -FinalOutputDir $FinalOutputDir -UseCache:$UseCache
         if ($LASTEXITCODE -ne 0) { throw "Example project packaging failed." }
     } else {
-        Write-Host "`n[TASK 2/4] Skipping example project generation (disabled in config)." -ForegroundColor Yellow
+        Write-Host "`n[TASK 2/3] Skipping example project generation (disabled in config)." -ForegroundColor Yellow
     }
 
-    # --- 3. FINALIZE BUILD ---
-    Write-Host "`n[TASK 3/4] Moving final packages to $FinalOutputDir..." -ForegroundColor Cyan
-    Get-ChildItem -Path $TempStagingDir -Filter "*.zip" | Move-Item -Destination $FinalOutputDir -Force
-    
-    Write-Host "Copying logs to $FinalOutputDir..." -ForegroundColor Cyan
-    Copy-Item -Path $LogDir -Destination $FinalOutputDir -Recurse -Force
-
-    # --- 4. UPLOAD TO CLOUD ---
+    # --- 3. UPLOAD TO CLOUD ---
     if ($Config.CloudUpload -and $Config.CloudUpload.Enable) {
-        Write-Host "`n[TASK 4/4] Uploading artifacts to cloud..." -ForegroundColor Cyan
+        Write-Host "`n[TASK 3/3] Uploading artifacts to cloud..." -ForegroundColor Cyan
+        # Copy logs to the final output directory for archival and upload
+        Write-Host "Copying logs to $FinalOutputDir..." -ForegroundColor Cyan
+        Copy-Item -Path $LogDir -Destination $FinalOutputDir -Recurse -Force
         & "$ScriptDir/Tools/upload_to_cloud.ps1" -SourceDirectory $FinalOutputDir
         if ($LASTEXITCODE -ne 0) { throw "Cloud upload failed." }
     } else {
-        Write-Host "`n[TASK 4/4] Skipping cloud upload (disabled in config)." -ForegroundColor Yellow
+        Write-Host "`n[TASK 3/3] Skipping cloud upload (disabled in config)." -ForegroundColor Yellow
     }
 
 } catch {
@@ -143,7 +139,7 @@ try {
 } finally {
     # Always clean up the temporary staging directory
     if (Test-Path $TempStagingDir) {
-        Write-Host "Cleaning up temporary staging directory: $TempStagingDir" -ForegroundColor Gray
+        Write-Host "`nCleaning up temporary staging directory: $TempStagingDir" -ForegroundColor Gray
         Remove-Item -Path $TempStagingDir -Recurse -Force
     }
 
@@ -162,4 +158,5 @@ if ($Host.Name -eq "ConsoleHost") {
 }
 
 # Exit with appropriate code
+exit $(if ($GlobalSuccess) { 0 } else { 1 })de
 exit $(if ($GlobalSuccess) { 0 } else { 1 })

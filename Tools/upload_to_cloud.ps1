@@ -110,12 +110,12 @@ try {
     Write-Host "`nUpload completed successfully with organized structure!" -ForegroundColor Green
     Write-Host "Final structure in Google Drive:" -ForegroundColor Cyan
     Write-Host "  $($RemotePath)/$($SourceDirName)/" -ForegroundColor Cyan
-    Write-Host "    ├── Plugins/                    (Plugin .zip files)" -ForegroundColor Cyan
-    Write-Host "    ├── ExampleProjects/" -ForegroundColor Cyan
-    Write-Host "    │   ├── v5_1/                  (UE 5.1 example projects)" -ForegroundColor Cyan
-    Write-Host "    │   ├── v5_2/                  (UE 5.2 example projects)" -ForegroundColor Cyan
-    Write-Host "    │   └── v5_X/                  (etc. for each engine version)" -ForegroundColor Cyan
-    Write-Host "    └── Logs/                      (Build logs)" -ForegroundColor Cyan
+    Write-Host "    +-- Plugins/                    (Plugin .zip files)" -ForegroundColor Cyan
+    Write-Host "    +-- ExampleProjects/" -ForegroundColor Cyan
+    Write-Host "    |   +-- v5_1/                  (UE 5.1 example projects)" -ForegroundColor Cyan
+    Write-Host "    |   +-- v5_2/                  (UE 5.2 example projects)" -ForegroundColor Cyan
+    Write-Host "    |   +-- v5_X/                  (etc. for each engine version)" -ForegroundColor Cyan
+    Write-Host "    +-- Logs/                      (Build logs)" -ForegroundColor Cyan
 
 } catch {
     Write-Host "`n!!!! CLOUD UPLOAD FAILED !!!!" -ForegroundColor Red

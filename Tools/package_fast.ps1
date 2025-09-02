@@ -17,7 +17,10 @@
 [CmdletBinding()]
 param (
     [Parameter(Mandatory=$false)]
-    [string]$OutputDirectory
+    [string]$OutputDirectory,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$UseCache
 )
 
 # --- PREPARATION ---
@@ -232,6 +235,13 @@ foreach ($EngineVersion in $Config.EngineVersions) {
 Write-Host "`n================================================================="
 if ($GlobalSuccess) {
     Write-Host " All packages created SUCCESSFULLY!" -ForegroundColor Green
+    Write-Host "Your zip files are ready for upload in '$OutputBuildsDir'" -ForegroundColor Green
+    exit 0
+} else {
+    Write-Host " One or more tasks FAILED. Please review the logs." -ForegroundColor Red
+    exit 1
+}
+reated SUCCESSFULLY!" -ForegroundColor Green
     Write-Host "Your zip files are ready for upload in '$OutputBuildsDir'" -ForegroundColor Green
     exit 0
 } else {

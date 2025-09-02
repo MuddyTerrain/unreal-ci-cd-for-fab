@@ -25,6 +25,7 @@ Saved/
 
 # Ignore the output directories
 /Builds_*/
+/Build*/
 /ExampleProjectBuild_*/
 /Logs/
 
@@ -35,3 +36,5 @@ Saved/
 # Ignore executables and archives
 *.exe
 *.zip
+
+feed.txt

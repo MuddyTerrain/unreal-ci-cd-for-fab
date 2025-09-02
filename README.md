@@ -136,18 +136,19 @@ Once configured, run the master script from a PowerShell terminal in the root of
 # Full pipeline with validation
 .\run_pipeline.ps1
 
-# Skip validation (not recommended for production)
-.\run_pipeline.ps1 -SkipValidation
+# Use the cache to skip already-built packages
+.\run_pipeline.ps1 -UseCache
 
-# Dry run to see what would be built
+# Dry run to see what would be built without executing
 .\run_pipeline.ps1 -DryRun
 ```
 
-The script will execute all configured tasks, creating plugin packages and version-specific example projects in a timestamped output folder (e.g., `Builds_20250726_183000`).
+The script will execute all configured tasks, creating plugin packages and version-specific example projects in your configured output folder (e.g., `Builds/`).
 
 ## Features
 
 * **Modular & Config-Driven**: A master script (`run_pipeline.ps1`) orchestrates the entire process based on settings in a single `config.json` file.
+* **Time-Saving Cache**: Use the `-UseCache` flag to skip building any plugin or example project versions that already exist in the output directory. Perfect for iterating on a single engine version.
 * **Multi-Version Plugin Packaging**: Automatically packages your source code plugin for all specified Unreal Engine versions.
 * **Automated Example Project Generation**:
   * Implements a "Develop Low, Upgrade High" workflow.
@@ -155,9 +156,10 @@ The script will execute all configured tasks, creating plugin packages and versi
   * Can create both a full C++ example and a stripped, Blueprint-only version.
 * **Optional Cloud Uploads**: Automatically uploads all generated `.zip` files to a cloud provider of your choice using rclone.
 * **Clean & Compliant Packaging**: Creates clean, marketplace-ready zip archives, excluding all temporary files like `Binaries`, `Intermediate`, and `Saved` folders, as per marketplace guidelines.
-* **Detailed Logging**: Generates separate logs for each task in a `Logs` subfolder inside the main output directory, making it easy to debug failures.
+* **Detailed Logging**: Generates separate logs for each task in a `Logs/` directory in the project root, making it easy to debug failures.
 * **Automatic Cleanup**: All temporary projects and build files are deleted after each run.
 * **Debug Options**: The `config.json` includes a `BuildOptions` section that allows you to skip certain parts of the pipeline for faster testing and debugging (e.g., `SkipPluginBuild`).
+
 
 ## Understanding rclone (For Cloud Uploads)
 
