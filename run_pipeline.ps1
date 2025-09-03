@@ -22,7 +22,10 @@ param (
     [switch]$DryRun,
     
     [Parameter(Mandatory=$false)]
-    [switch]$SkipValidation
+    [switch]$SkipValidation,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$UseCache
 )
 
 # --- PREPARATION ---
@@ -103,27 +106,34 @@ Write-Host " STARTING MASTER PIPELINE (Final output to: $FinalOutputDir)" -Foreg
 Write-Host "================================================================="
 
 try {
-    # --- 1. PACKAGE PLUGIN ---
-    if ($Config.BuildOptions -and $Config.BuildOptions.SkipPluginBuild) {
-        Write-Host "`n[TASK 1/3] Skipping plugin packaging (SkipPluginBuild is true in config)." -ForegroundColor Yellow
-    } else {
-        Write-Host "`n[TASK 1/3] Running plugin packaging script..." -ForegroundColor Cyan
-        & "$ScriptDir/Tools/package_fast.ps1" -OutputDirectory $FinalOutputDir -UseCache:$UseCache
-        if ($LASTEXITCODE -ne 0) { throw "Plugin packaging failed." }
+    # --- Loop through each engine version and run tasks sequentially ---
+    foreach ($EngineVersion in $Config.EngineVersions) {
+        Write-Host "`n=================================================================" -ForegroundColor DarkCyan
+        Write-Host " PROCESSING ENGINE VERSION: $EngineVersion" -ForegroundColor DarkCyan
+        Write-Host "================================================================="
+
+        # --- 1. PACKAGE PLUGIN ---
+        if ($Config.BuildOptions -and $Config.BuildOptions.SkipPluginBuild) {
+            Write-Host "`n[TASK 1/3] Skipping plugin packaging for $EngineVersion (SkipPluginBuild is true in config)." -ForegroundColor Yellow
+        } else {
+            Write-Host "`n[TASK 1/3] Running plugin packaging script for $EngineVersion..." -ForegroundColor Cyan
+            & "$ScriptDir/Tools/package_fast.ps1" -OutputDirectory $FinalOutputDir -EngineVersion $EngineVersion -UseCache:$UseCache
+            if ($LASTEXITCODE -ne 0) { throw "Plugin packaging failed for $EngineVersion." }
+        }
+
+        # --- 2. PACKAGE EXAMPLE PROJECTS ---
+        if ($Config.ExampleProject -and $Config.ExampleProject.Generate) {
+            Write-Host "`n[TASK 2/3] Running example project packaging script for $EngineVersion..." -ForegroundColor Cyan
+            & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirectory $TempStagingDir -FinalOutputDir $FinalOutputDir -EngineVersion $EngineVersion -UseCache:$UseCache
+            if ($LASTEXITCODE -ne 0) { throw "Example project packaging failed for $EngineVersion." }
+        } else {
+            Write-Host "`n[TASK 2/3] Skipping example project generation for $EngineVersion (disabled in config)." -ForegroundColor Yellow
+        }
     }
 
-    # --- 2. PACKAGE EXAMPLE PROJECTS ---
-    if ($Config.ExampleProject -and $Config.ExampleProject.Generate) {
-        Write-Host "`n[TASK 2/3] Running example project packaging script..." -ForegroundColor Cyan
-        & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirectory $TempStagingDir -FinalOutputDir $FinalOutputDir -UseCache:$UseCache
-        if ($LASTEXITCODE -ne 0) { throw "Example project packaging failed." }
-    } else {
-        Write-Host "`n[TASK 2/3] Skipping example project generation (disabled in config)." -ForegroundColor Yellow
-    }
-
-    # --- 3. UPLOAD TO CLOUD ---
+    # --- 3. UPLOAD TO CLOUD (runs once after all versions are processed) ---
     if ($Config.CloudUpload -and $Config.CloudUpload.Enable) {
-        Write-Host "`n[TASK 3/3] Uploading artifacts to cloud..." -ForegroundColor Cyan
+        Write-Host "`n[TASK 3/3] Uploading all artifacts to cloud..." -ForegroundColor Cyan
         # Copy logs to the final output directory for archival and upload
         Write-Host "Copying logs to $FinalOutputDir..." -ForegroundColor Cyan
         Copy-Item -Path $LogDir -Destination $FinalOutputDir -Recurse -Force
@@ -158,5 +168,4 @@ if ($Host.Name -eq "ConsoleHost") {
 }
 
 # Exit with appropriate code
-exit $(if ($GlobalSuccess) { 0 } else { 1 })de
 exit $(if ($GlobalSuccess) { 0 } else { 1 })

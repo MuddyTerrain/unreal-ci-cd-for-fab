@@ -175,6 +175,16 @@ It's a command-line program for managing files on cloud storage. It's a single e
 
 ---
 
+## Known Issues
+
+> [!IMPORTANT]
+> **Global Build Configuration (`BuildConfiguration.xml`)**
+> To ensure the correct Visual Studio toolchain is used for each engine version, the `package_fast.ps1` script temporarily modifies the global `BuildConfiguration.xml` file located in `Documents/Unreal Engine/UnrealBuildTool`.
+>
+> The script creates a backup and is designed to restore it, even if the build fails. However, if the script is terminated abruptly (e.g., by a system crash or forced shutdown), the backup may not be restored. This could potentially affect other Unreal Engine projects on your system.
+>
+> **Mitigation**: If you suspect this has happened, you can manually restore the configuration by deleting `BuildConfiguration.xml` and renaming `BuildConfiguration.xml.bak` to `BuildConfiguration.xml` in the above directory.
+
 ## Troubleshooting
 
 ### "Banned" C++ Compiler Error: `UnrealBuildTool has banned the MSVC [version] toolchains...`

@@ -20,6 +20,9 @@ param (
     [string]$OutputDirectory,
 
     [Parameter(Mandatory=$false)]
+    [string]$EngineVersion,
+
+    [Parameter(Mandatory=$false)]
     [switch]$UseCache
 )
 
@@ -69,28 +72,37 @@ $UserBuildConfigPath = Join-Path -Path $UserBuildConfigDir -ChildPath "BuildConf
 $UserBuildConfigBackupPath = Join-Path -Path $UserBuildConfigDir -ChildPath "BuildConfiguration.xml.bak"
 
 
-foreach ($EngineVersion in $Config.EngineVersions) {
+# Determine which engine versions to process
+$VersionsToProcess = if (-not [string]::IsNullOrEmpty($EngineVersion)) { @($EngineVersion) } else { $Config.EngineVersions }
+
+foreach ($CurrentEngineVersion in $VersionsToProcess) {
     $CurrentStage = "SETUP"
-    $EnginePath = Join-Path -Path $Config.UnrealEngineBasePath -ChildPath "UE_$EngineVersion"
-    $LogFile = Join-Path -Path $LogsDir -ChildPath "BuildLog_UE_${EngineVersion}_$Timestamp.txt"
+    $EnginePath = Join-Path -Path $Config.UnrealEngineBasePath -ChildPath "UE_$CurrentEngineVersion"
+    $LogFile = Join-Path -Path $LogsDir -ChildPath "BuildLog_UE_${CurrentEngineVersion}_$Timestamp.txt"
 
     # Define paths for temporary and final artifacts for this version
-    $TempDir = Join-Path -Path $OutputBuildsDir -ChildPath "Temp_${EngineVersion}"
+    $TempDir = Join-Path -Path $OutputBuildsDir -ChildPath "Temp_${CurrentEngineVersion}"
     $HostProjectDir = Join-Path -Path $TempDir -ChildPath "HostProject"
     $PackageOutputDir = Join-Path -Path $TempDir -ChildPath "PackagedPlugin_Raw"
     $CleanedPluginStageDir = Join-Path -Path $TempDir -ChildPath "Staging"
     
-    $FinalPluginZipPath = Join-Path -Path $OutputBuildsDir -ChildPath "$($Config.PluginName)_v$($PluginVersion)_ue$($EngineVersion).zip"
+    $FinalPluginZipPath = Join-Path -Path $OutputBuildsDir -ChildPath "$($Config.PluginName)_v$($PluginVersion)_ue$($CurrentEngineVersion).zip"
 
     Write-Host "`n-----------------------------------------------------------------" -ForegroundColor Yellow
-    Write-Host " [TASK] Starting pipeline for Unreal Engine $EngineVersion" -ForegroundColor Yellow
+    Write-Host " [TASK] Starting pipeline for Unreal Engine $CurrentEngineVersion" -ForegroundColor Yellow
     Write-Host " (Full log will be saved to: $LogFile)" -ForegroundColor Yellow
     Write-Host "-----------------------------------------------------------------"
+
+    # --- CACHE CHECK ---
+    if ($UseCache.IsPresent -and (Test-Path $FinalPluginZipPath)) {
+        Write-Host "[CACHE] Skipping UE $CurrentEngineVersion because output already exists: $FinalPluginZipPath" -ForegroundColor Cyan
+        continue
+    }
 
     try {
         # --- 1. SETUP BUILD ENVIRONMENT ---
         $CurrentStage = "SETUP_BUILD_CONFIG"
-        Write-Host "[1/3] [CONFIG] Setting up build environment for UE $EngineVersion..."
+        Write-Host "[1/3] [CONFIG] Setting up build environment for UE $CurrentEngineVersion..."
         
         if (Test-Path $TempDir) { Remove-Item -Recurse -Force -Path $TempDir }
         New-Item -Path $TempDir -ItemType Directory -Force | Out-Null
@@ -101,13 +113,13 @@ foreach ($EngineVersion in $Config.EngineVersions) {
         }
         
         # Updated Toolchain versions based on Epic's recommendations
-        $ToolchainVersion = switch ($EngineVersion) {
+        $ToolchainVersion = switch ($CurrentEngineVersion) {
             "5.1" { "14.32.31326" } # VS 2022 v17.2
             "5.2" { "14.34.31933" } # VS 2022 v17.4
             "5.3" { "14.36.32532" } # VS 2022 v17.6
             "5.4" { "14.38.33130" } # VS 2022 v17.8
-            "5.5" { "14.38.33130" } # VS 2022 v17.10 
-            "5.6" { "14.40.33807" } # VS 2022 v17.10 or later
+            "5.5" { "14.38.33130" } # VS 2022 v17.10  
+            "5.6" { "14.38.33130" } # VS 2022 v17.10 or later #14.40.33807
             default { "Latest" }
         }
         @"
@@ -156,7 +168,7 @@ foreach ($EngineVersion in $Config.EngineVersions) {
         
         $HostUpluginPath = Join-Path -Path $HostPluginDir -ChildPath "$($Config.PluginName).uplugin"
         $UpluginJson = Get-Content -Raw -Path $HostUpluginPath | ConvertFrom-Json
-        $UpluginJson.EngineVersion = "$($EngineVersion).0"
+        $UpluginJson.EngineVersion = "$($CurrentEngineVersion).0"
         $UpluginJson | ConvertTo-Json -Depth 5 | Out-File -FilePath $HostUpluginPath -Encoding utf8
 
         # FIX: Restore Tee-Object to show live build log in console AND save to file.
@@ -210,18 +222,18 @@ foreach ($EngineVersion in $Config.EngineVersions) {
             }
         }
 
-        Write-Host "[SUCCESS] UE $EngineVersion package created successfully!" -ForegroundColor Green
+        Write-Host "[SUCCESS] UE $CurrentEngineVersion package created successfully!" -ForegroundColor Green
 
     } catch {
         $GlobalSuccess = $false
         Write-Host "`n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" -ForegroundColor Red
-        Write-Host "!!!! BUILD FAILED for UE $EngineVersion at stage: $CurrentStage !!!!" -ForegroundColor Red
+        Write-Host "!!!! BUILD FAILED for UE $CurrentEngineVersion at stage: $CurrentStage !!!!" -ForegroundColor Red
         Write-Host "!!!! Error: $($_.Exception.Message)" -ForegroundColor Red
         Write-Host "!!!! Check the log file for details: $LogFile" -ForegroundColor Red
         Write-Host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" -ForegroundColor Red
     } finally {
         # --- Cleanup ---
-        Write-Host "Cleaning up temporary files for UE $EngineVersion..."
+        Write-Host "Cleaning up temporary files for UE $CurrentEngineVersion..."
         if (Test-Path $TempDir) { Remove-Item -Recurse -Force -Path $TempDir }
         
         if (Test-Path $UserBuildConfigPath) { Remove-Item -Path $UserBuildConfigPath -Force }
@@ -231,20 +243,4 @@ foreach ($EngineVersion in $Config.EngineVersions) {
     }
 }
 
-# --- FINAL SUMMARY ---
-Write-Host "`n================================================================="
-if ($GlobalSuccess) {
-    Write-Host " All packages created SUCCESSFULLY!" -ForegroundColor Green
-    Write-Host "Your zip files are ready for upload in '$OutputBuildsDir'" -ForegroundColor Green
-    exit 0
-} else {
-    Write-Host " One or more tasks FAILED. Please review the logs." -ForegroundColor Red
-    exit 1
-}
-reated SUCCESSFULLY!" -ForegroundColor Green
-    Write-Host "Your zip files are ready for upload in '$OutputBuildsDir'" -ForegroundColor Green
-    exit 0
-} else {
-    Write-Host " One or more tasks FAILED. Please review the logs." -ForegroundColor Red
-    exit 1
-}
+
