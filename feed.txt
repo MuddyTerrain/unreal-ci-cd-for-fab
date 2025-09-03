@@ -1,0 +1,547 @@
+PS C:\Core\Code\Ship\FabBuilding> .\run_pipeline.ps1 -UseCache
+Validating configuration and prerequisites...
+Validating FabBuilding Configuration...
+=================================================================
+
+[1/6] Validating configuration file...
+[OK] Configuration file loaded successfully
+[OK] Required field 'OutputDirectory' is valid
+[OK] Required field 'PluginName' is valid
+[OK] Required field 'PluginSourceDirectory' is valid
+[OK] Required field 'UnrealEngineBasePath' is valid
+[OK] Required field 'EngineVersions' is valid
+
+[2/6] Validating plugin configuration...
+[OK] Plugin source directory exists
+[OK] Plugin .uplugin file is valid
+[OK] Plugin version: 1.3.1
+
+[3/6] Validating Unreal Engine installations...
+[OK] Unreal Engine 5.1 found
+[OK] Unreal Engine 5.2 found
+[OK] Unreal Engine 5.3 found
+[OK] Unreal Engine 5.4 found
+[OK] Unreal Engine 5.5 found
+[OK] Unreal Engine 5.6 found
+
+[4/6] Validating example project configuration...
+[OK] Master project directory exists
+[OK] Found .uproject file: GenAIExample.uproject
+
+[5/6] Validating cloud upload configuration...
+Cloud upload disabled - skipping validation
+
+[6/6] Validating system prerequisites...
+[OK] PowerShell version: 5.1.26100.4768
+[OK] Robocopy is available
+
+=================================================================
+VALIDATION SUMMARY:
+[SUCCESS] Configuration validation PASSED!
+Your setup is ready for production use.
+Using temporary staging directory: C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924
+=================================================================
+ STARTING MASTER PIPELINE (Final output to: C:\Core\Code\Ship\FabBuilding\.\Builds)
+=================================================================
+
+=================================================================
+ PROCESSING ENGINE VERSION: 5.1
+=================================================================
+
+[TASK 1/3] Running plugin packaging script for 5.1...
+=================================================================
+ STARTING FAST PLUGIN PACKAGING PIPELINE (Fab Upload)
+=================================================================
+Plugin: GenAIForUnreal v1.3.1
+Outputting to: C:\Core\Code\Ship\FabBuilding\.\Builds
+
+-----------------------------------------------------------------
+ [TASK] Starting pipeline for Unreal Engine 5.1
+ (Full log will be saved to: C:\Core\Code\Ship\FabBuilding\Logs\BuildLog_UE_5.1_20250903_111924.txt)
+-----------------------------------------------------------------
+[CACHE] Skipping UE 5.1 because output already exists: C:\Core\Code\Ship\FabBuilding\.\Builds\GenAIForUnreal_v1.3.1_ue5.1.zip
+
+[TASK 2/3] Running example project packaging script for 5.1...
+
+-----------------------------------------------------------------
+ [EXAMPLE] Processing UE 5.1 for Project v1.3.0.1
+-----------------------------------------------------------------
+[CACHE] Skipping UE 5.1 because all example project outputs already exist.
+
+=================================================================
+ PROCESSING ENGINE VERSION: 5.2
+=================================================================
+
+[TASK 1/3] Running plugin packaging script for 5.2...
+=================================================================
+ STARTING FAST PLUGIN PACKAGING PIPELINE (Fab Upload)
+=================================================================
+Plugin: GenAIForUnreal v1.3.1
+Outputting to: C:\Core\Code\Ship\FabBuilding\.\Builds
+
+-----------------------------------------------------------------
+ [TASK] Starting pipeline for Unreal Engine 5.2
+ (Full log will be saved to: C:\Core\Code\Ship\FabBuilding\Logs\BuildLog_UE_5.2_20250903_111924.txt)
+-----------------------------------------------------------------
+[CACHE] Skipping UE 5.2 because output already exists: C:\Core\Code\Ship\FabBuilding\.\Builds\GenAIForUnreal_v1.3.1_ue5.2.zip
+
+[TASK 2/3] Running example project packaging script for 5.2...
+
+-----------------------------------------------------------------
+ [EXAMPLE] Processing UE 5.2 for Project v1.3.0.1
+-----------------------------------------------------------------
+[CACHE] Skipping UE 5.2 because all example project outputs already exist.
+
+=================================================================
+ PROCESSING ENGINE VERSION: 5.3
+=================================================================
+
+[TASK 1/3] Running plugin packaging script for 5.3...
+=================================================================
+ STARTING FAST PLUGIN PACKAGING PIPELINE (Fab Upload)
+=================================================================
+Plugin: GenAIForUnreal v1.3.1
+Outputting to: C:\Core\Code\Ship\FabBuilding\.\Builds
+
+-----------------------------------------------------------------
+ [TASK] Starting pipeline for Unreal Engine 5.3
+ (Full log will be saved to: C:\Core\Code\Ship\FabBuilding\Logs\BuildLog_UE_5.3_20250903_111924.txt)
+-----------------------------------------------------------------
+[CACHE] Skipping UE 5.3 because output already exists: C:\Core\Code\Ship\FabBuilding\.\Builds\GenAIForUnreal_v1.3.1_ue5.3.zip
+
+[TASK 2/3] Running example project packaging script for 5.3...
+
+-----------------------------------------------------------------
+ [EXAMPLE] Processing UE 5.3 for Project v1.3.0.1
+-----------------------------------------------------------------
+[1/6] Copying master project...
+[2/6] Skipping plugin compilation (plugin will be excluded from final package).
+[3/6] Building project editor targets for UE 5.3...
+Using bundled DotNet SDK version: 6.0.302
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" GenAIExampleEditor Win64 Development -Project=C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\GenAIExample.uproject
+Log file: C:\Users\prajw\AppData\Local\UnrealBuildTool\Log.txt
+Creating makefile for GenAIExampleEditor (no existing makefile)
+C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Source\GenAIExampleEditor.Target.cs(12,25): warning CS0618: 'EngineIncludeOrderVersion.Unreal5_1' is obsolete: 'The Unreal 5.1 include order is deprecated and will be removed in 5.4.'
+C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Source\GenAIExample.Target.cs(12,25): warning CS0618: 'EngineIncludeOrderVersion.Unreal5_1' is obsolete: 'The Unreal 5.1 include order is deprecated and will be removed in 5.4.'
+Parsing headers for GenAIExampleEditor
+  Running Internal UnrealHeaderTool C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\GenAIExample.uproject C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Intermediate\Build\Win64\GenAIExampleEditor\Development\GenAIExampleEditor.uhtmanifest -WarningsAsErrors -installed
+Total of 126 written
+Reflection code generated for GenAIExampleEditor in 1.1724221 seconds
+Building GenAIExampleEditor...
+Using Visual Studio 2022 14.36.32548 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Upgrade]
+[Upgrade] Using backward-compatible build settings. The latest version of UE sets the following values by default, which may require code changes:
+[Upgrade]     bLegacyParentIncludePaths = false               => Omits module parent folders from include paths to reduce compiler command line length. (Previously: true).
+[Upgrade]     CppStandard = CppStandardVersion.Default        => Updates C++ Standard to C++20 (Previously: CppStandardVersion.Cpp17).
+[Upgrade]     WindowsPlatform.bStrictConformanceMode = true   => Updates MSVC strict conformance mode to true (Previously: false).
+[Upgrade] Suppress this message by setting 'DefaultBuildSettings = BuildSettingsVersion.V4;' in GenAIExampleEditor.Target.cs, and explicitly overriding settings that differ from the new defaults.
+[Upgrade]
+[Upgrade]
+[Upgrade] Using backward-compatible include order. The latest version of UE has changed the order of includes, which may require code changes. The current setting is:
+[Upgrade]     IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_1
+[Upgrade] Suppress this message by setting 'IncludeOrderVersion = EngineIncludeOrderVersion.Latest;' in GenAIExampleEditor.Target.cs.
+[Upgrade] Alternatively you can set this to 'EngineIncludeOrderVersion.Latest' to always use the latest include order. This will potentially cause compile errors when integrating new versions of the engine.
+[Upgrade]
+Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
+  Executing up to 8 processes, one per physical core
+  Requested 1.5 GB memory per action, 2.93 GB available: limiting max parallel actions to 1
+------ Building 54 action(s) started ------
+[1/54] Compile [x64] SharedPCH.Engine.Cpp17.InclOrderUnreal5_1.cpp
+[2/54] Compile [x64] SharedPCH.UnrealEd.Cpp17.InclOrderUnreal5_1.cpp
+[3/54] Compile [x64] Module.GenAI.5.cpp
+[4/54] Compile [x64] Module.GenAI.4.cpp
+[5/54] Compile [x64] Module.GenAI.2.cpp
+[6/54] Compile [x64] Module.GenAI.1.cpp
+[7/54] Compile [x64] Module.GenAI.3.cpp
+[8/54] Resource Default.rc2
+[9/54] Link [x64] UnrealEditor-GenAI.lib
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.exp
+[10/54] Link [x64] UnrealEditor-GenAI.dll
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.sup.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.sup.exp
+[11/54] Compile [x64] Module.GenAIBlueprintNodes.cpp
+[12/54] Resource Default.rc2
+[13/54] Link [x64] UnrealEditor-GenAIBlueprintNodes.lib
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.exp
+[14/54] Link [x64] UnrealEditor-GenAIBlueprintNodes.dll
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.sup.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.sup.exp
+[15/54] Compile [x64] Module.GenAIEditor.cpp
+[16/54] Compile [x64] GXOpenAIImageExample.gen.cpp
+[17/54] Compile [x64] GenAIExample.cpp
+[18/54] Compile [x64] GXOpenAIRealtimeExample.cpp
+[19/54] Compile [x64] GXGeminiChatExample.cpp
+[20/54] Compile [x64] GXGoogleImageExample.gen.cpp
+[21/54] Compile [x64] GenAIExampleDelegates.gen.cpp
+[22/54] Compile [x64] GXDeepSeekChatExample.gen.cpp
+[23/54] Compile [x64] Module.GenAITests.cpp
+[24/54] Compile [x64] GXDeepSeekChatExample.cpp
+[25/54] Compile [x64] GXOpenAIStructuredOpExample.cpp
+[26/54] Compile [x64] GXClaudeChatExample.cpp
+[27/54] Compile [x64] GXXAIChatExample.gen.cpp
+[28/54] Compile [x64] GXOpenAIChatExample.cpp
+[29/54] Compile [x64] GXOpenAIImageExample.cpp
+[30/54] Compile [x64] GXOpenAIAudioExample.cpp
+[31/54] Compile [x64] GenAIExampleGameModeBase.gen.cpp
+[32/54] Compile [x64] GXXAIChatExample.cpp
+[33/54] Compile [x64] GenAIExampleGameModeBase.cpp
+[34/54] Compile [x64] GXOpenAIAudioExample.gen.cpp
+[35/54] Compile [x64] GXClaudeChatExample.gen.cpp
+[36/54] Compile [x64] GXGoogleAudioExample.gen.cpp
+[37/54] Compile [x64] GXGeminiChatExample.gen.cpp
+[38/54] Compile [x64] GXGoogleImageExample.cpp
+[39/54] Compile [x64] GXOpenAIChatExample.gen.cpp
+[40/54] Compile [x64] GenAIExample.init.gen.cpp
+[41/54] Compile [x64] GXGoogleAudioExample.cpp
+[42/54] Compile [x64] GenAIExampleDelegates.cpp
+[43/54] Compile [x64] GXOpenAIStructuredOpExample.gen.cpp
+[44/54] Compile [x64] GXOpenAIRealtimeExample.gen.cpp
+[45/54] Resource Default.rc2
+[46/54] Link [x64] UnrealEditor-GenAIExample.dll
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIExample\UnrealEditor-GenAIExample.sup.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIExample\UnrealEditor-GenAIExample.sup.exp
+[47/54] Link [x64] UnrealEditor-GenAIExample.lib
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIExample\UnrealEditor-GenAIExample.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIExample\UnrealEditor-GenAIExample.exp
+[48/54] Resource Default.rc2
+[49/54] Link [x64] UnrealEditor-GenAIEditor.dll
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.sup.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.sup.exp
+[50/54] Link [x64] UnrealEditor-GenAIEditor.lib
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.exp
+[51/54] Resource Default.rc2
+[52/54] Link [x64] UnrealEditor-GenAITests.dll
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.sup.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.sup.exp
+[53/54] Link [x64] UnrealEditor-GenAITests.lib
+   Creating library C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.lib and object C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.exp
+[54/54] WriteMetadata GenAIExampleEditor.target
+Total time in Parallel executor: 132.52 seconds
+Total execution time: 138.37 seconds
+[4/6] Upgrading project assets for UE 5.3...
+[2025.09.03-10.22.20:731][  0]LogD3D12RHI: Display: Creating D3D12 RHI with Max Feature Level SM6
+[2025.09.03-10.22.21:074][  0]LogD3D12RHI: Display: Not using pipeline state disk cache per r.D3D12.PSO.DiskCache=0
+[2025.09.03-10.22.21:074][  0]LogD3D12RHI: Display: Not using driver-optimized pipeline state disk cache per r.D3D12.PSO.DriverOptimizedDiskCache=0
+[2025.09.03-10.22.21:183][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatASTC
+[2025.09.03-10.22.21:183][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatDXT
+[2025.09.03-10.22.21:183][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatETC2
+[2025.09.03-10.22.21:183][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatIntelISPCTexComp
+[2025.09.03-10.22.21:183][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatUncompressed
+[2025.09.03-10.22.21:183][  0]LogTextureFormatOodle: Display: Oodle Texture TFO init; latest sdk version = 2.9.10
+[2025.09.03-10.22.21:183][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.5.dll
+[2025.09.03-10.22.21:186][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.6.dll
+[2025.09.03-10.22.21:188][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.7.dll
+[2025.09.03-10.22.21:190][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.8.dll
+[2025.09.03-10.22.21:192][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.9.dll
+[2025.09.03-10.22.21:195][  0]LogTextureFormatOodle: Display: Oodle Texture loading DLL: oo2tex_win64_2.9.10.dll
+[2025.09.03-10.22.21:197][  0]LogTextureFormatManager: Display: Loaded Base TextureFormat: TextureFormatOodle
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ASTC'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_DXT'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ETC2'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'AndroidClient'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ASTCClient'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_DXTClient'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ETC2Client'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_Multi'
+[2025.09.03-10.22.21:234][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_MultiClient'
+[2025.09.03-10.22.21:241][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOS'
+[2025.09.03-10.22.21:241][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOSClient'
+[2025.09.03-10.22.21:247][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Linux'
+[2025.09.03-10.22.21:247][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxEditor'
+[2025.09.03-10.22.21:247][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxServer'
+[2025.09.03-10.22.21:247][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxClient'
+[2025.09.03-10.22.21:252][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxArm64'
+[2025.09.03-10.22.21:252][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxArm64Server'
+[2025.09.03-10.22.21:252][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxArm64Client'
+[2025.09.03-10.22.21:258][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Mac'
+[2025.09.03-10.22.21:258][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacEditor'
+[2025.09.03-10.22.21:258][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacServer'
+[2025.09.03-10.22.21:258][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacClient'
+[2025.09.03-10.22.21:262][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOS'
+[2025.09.03-10.22.21:262][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOSClient'
+[2025.09.03-10.22.21:274][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Windows'
+[2025.09.03-10.22.21:274][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsEditor'
+[2025.09.03-10.22.21:274][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsServer'
+[2025.09.03-10.22.21:274][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsClient'
+[2025.09.03-10.22.21:275][  0]LogTargetPlatformManager: Display: Building Assets For WindowsEditor
+[2025.09.03-10.22.21:310][  0]LogAudioDebug: Display: Lib vorbis DLL was dynamically loaded.
+[2025.09.03-10.22.21:666][  0]LogDerivedDataCache: Display: Memory: Max Cache Size: -1 MB
+[2025.09.03-10.22.21:735][  0]LogDerivedDataCache: Display: ../../../Engine/DerivedDataCache/Compressed.ddp: Opened pak cache for reading. (2383 MiB)
+[2025.09.03-10.22.21:806][  0]LogDerivedDataCache: Display: C:/Users/prajw/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.17ms. RandomReadSpeed=15.68MBs, RandomWriteSpeed=140.68MBs. Assigned SpeedClass 'Local'
+[2025.09.03-10.22.21:821][  0]LogShaderCompilers: Display: Using Local Shader Compiler with 13 workers.
+[2025.09.03-10.22.27:793][  0]LogShaderCompilers: Display: Compiling shader autogen file: ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Intermediate/ShaderAutogen/PCD3D_SM6/AutogenShaderHeaders.ush
+[2025.09.03-10.22.27:794][  0]LogShaderCompilers: Display: Failed to delete old shader autogen file: ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Intermediate/ShaderAutogen/PCD3D_SM6/AutogenShaderHeaders.ush
+[2025.09.03-10.22.27:794][  0]LogShaderCompilers: Display: Shader autogen file written: ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Intermediate/ShaderAutogen/PCD3D_SM6/AutogenShaderHeaders.ush
+[2025.09.03-10.22.28:514][  0]LogEditorDomain: Display: EditorDomain is Disabled
+[2025.09.03-10.22.28:768][  0]LogTextureEncodingSettings: Display: Texture Encode Speed: Final (cook).
+[2025.09.03-10.22.28:769][  0]LogTextureEncodingSettings: Display: Oodle Texture Encode Speed settings: Fast: RDO Off Lambda=0, Effort=Normal Final: RDO Off Lambda=0, Effort=Normal
+[2025.09.03-10.22.28:769][  0]LogTextureEncodingSettings: Display: Shared linear texture encoding: Disabled
+[2025.09.03-10.22.28:770][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64Editor not found.
+[2025.09.03-10.22.28:770][  0]LogDeviceProfileManager: Display: Deviceprofile LinuxArm64 not found.
+[2025.09.03-10.22.28:907][  0]LogCsvProfiler: Display: Metadata set : deviceprofile="WindowsEditor"
+[2025.09.03-10.22.28:907][  0]LogShaderCompilers: Display: Compiling shader autogen file: ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Intermediate/ShaderAutogen/PCD3D_SM5/AutogenShaderHeaders.ush
+[2025.09.03-10.22.28:908][  0]LogShaderCompilers: Display: Failed to delete old shader autogen file: ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Intermediate/ShaderAutogen/PCD3D_SM5/AutogenShaderHeaders.ush
+[2025.09.03-10.22.28:908][  0]LogShaderCompilers: Display: Shader autogen file written: ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Intermediate/ShaderAutogen/PCD3D_SM5/AutogenShaderHeaders.ush
+[2025.09.03-10.22.29:530][  0]LogMeshReduction: Display: Using QuadricMeshReduction for automatic static mesh reduction
+[2025.09.03-10.22.29:530][  0]LogMeshReduction: Display: Using SkeletalMeshReduction for automatic skeletal mesh reduction
+[2025.09.03-10.22.29:530][  0]LogMeshReduction: Display: Using ProxyLODMeshReduction for automatic mesh merging
+[2025.09.03-10.22.29:530][  0]LogMeshReduction: Display: No distributed automatic mesh merging module available
+[2025.09.03-10.22.30:419][  0]LogVirtualization: Display: VirtualizationSystem name found in ini file: None
+[2025.09.03-10.22.30:419][  0]LogVirtualization: Display: FNullVirtualizationSystem mounted, virtualization will be disabled
+[2025.09.03-10.22.30:430][  0]LogLiveCoding: Display: Starting LiveCoding
+[2025.09.03-10.22.30:430][  0]LogLiveCoding: Display: LiveCodingConsole Arguments: UnrealEditor Win64 Development
+[2025.09.03-10.22.30:431][  0]LogLiveCoding: Display: First instance in process group "UE_GenAIExample_0x01148bcd", spawning console
+[2025.09.03-10.22.30:444][  0]LogLiveCoding: Display: Waiting for server
+LogLiveCodingServer: Display: Registered process C:\Program Files\Epic Games\UE_5.3\Engine\Binaries\Win64\UnrealEditor-Cmd.exe (PID: 13380)
+[2025.09.03-10.22.31:595][  0]LogLiveCoding: Display: Successfully initialized, removing startup thread
+[2025.09.03-10.22.32:224][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize started...
+[2025.09.03-10.22.32:240][  0]LogWorldPartition: Display: FWorldPartitionClassDescRegistry::Initialize took 16 ms
+[2025.09.03-10.22.33:642][  0]LogAudio: Display: Registering Engine Module Parameter Interfaces...
+[2025.09.03-10.22.35:031][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2025.09.03-10.22.35:031][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2025.09.03-10.22.35:031][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2025.09.03-10.22.35:031][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2025.09.03-10.22.35:031][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2025.09.03-10.22.35:035][  0]LogLiveCoding: Display: LiveCodingConsole Arguments: GenAIExampleEditor Win64 Development
+LogLiveCodingServer: Display: Loading module C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Binaries\Win64\UnrealEditor-GenAI.dll (1.378 MB)
+LogLiveCodingServer: Display: Loading module C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Binaries\Win64\UnrealEditor-GenAIExample.dll (0.442 MB)
+LogLiveCodingServer: Display: Loaded 2 module(s), 2 lazy load module(s), and 0 reserved page ranges (0.000s, 35 translation units)
+LogLiveCodingServer: Display: Live coding ready - Save changes and press Ctrl+Alt+F11 to re-compile code
+[2025.09.03-10.22.36:676][  0]LogStreaming: Warning: Failed to read file '../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Saved/Config/GenAI/secureconfig.bin' error.
+[2025.09.03-10.22.36:717][  0]LogStreaming: Warning: Failed to read file '../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Saved/Config/GenAI/secureconfig.bin' error.
+LogLiveCodingServer: Display: Loading module C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Binaries\Win64\UnrealEditor-GenAIEditor.dll (0.069 MB)
+LogLiveCodingServer: Display: Loaded 1 module(s), 0 lazy load module(s), and 0 reserved page ranges (0.000s, 2 translation units)
+LogLiveCodingServer: Display: Loading module C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Binaries\Win64\UnrealEditor-GenAITests.dll (0.377 MB)
+LogLiveCodingServer: Display: Loaded 1 module(s), 0 lazy load module(s), and 0 reserved page ranges (0.000s, 2 translation units)
+LogLiveCodingServer: Display: Loading module C:\Core\Code\Ship\FabBuilding\.temp_stage_20250903_111924\Ex5.3\Plugins\GenAIForUnreal\Binaries\Win64\UnrealEditor-GenAIBlueprintNodes.dll (0.499 MB)
+LogLiveCodingServer: Display: Loaded 1 module(s), 0 lazy load module(s), and 0 reserved page ranges (0.000s, 2 translation units)
+[2025.09.03-10.22.37:590][  0]LogCsvProfiler: Display: Metadata set : largeworldcoordinates="1"
+[2025.09.03-10.22.38:049][  0]LogContentCommandlet: Display: No maps found to save when building HLODs, checking Project Settings for Directory or Asset Path(s)
+[2025.09.03-10.22.39:166][  0]LogContentCommandlet: Display: Cleaning temp file directory
+[2025.09.03-10.22.39:166][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/GM_ExampleModeBP.uasset
+[2025.09.03-10.22.39:677][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/GM_ExampleModeBP.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.39:735][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/GM_ExampleModeBP.uasset].
+[2025.09.03-10.22.39:840][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_AudioConversationExamples.uasset
+[2025.09.03-10.22.39:864][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_AudioConversationExamples.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.39:889][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_AudioConversationExamples.uasset].
+[2025.09.03-10.22.39:894][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ChatAPIExamples.uasset
+[2025.09.03-10.22.39:912][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ChatAPIExamples.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.39:935][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ChatAPIExamples.uasset].
+[2025.09.03-10.22.39:939][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ImageEditingExamples.uasset
+[2025.09.03-10.22.39:951][  0]LogMaterial: Display: Missing cached shadermap for ImageGenTestMat in PCD3D_SM6, Default, SM6, Editor (DDC key hash: 58ed1c8323e8f2e2117d38889a227767fddc9547), compiling.
+[2025.09.03-10.22.40:005][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ImageEditingExamples.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.40:018][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ImageEditingExamples.uasset].
+[2025.09.03-10.22.41:425][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ImageGenerationExamples.uasset
+[2025.09.03-10.22.41:440][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ImageGenerationExamples.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:456][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_ImageGenerationExamples.uasset].
+[2025.09.03-10.22.41:463][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_MultiModalChatExamples.uasset
+[2025.09.03-10.22.41:477][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_MultiModalChatExamples.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:499][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_MultiModalChatExamples.uasset].
+[2025.09.03-10.22.41:508][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_RealtimeAPI.uasset
+[2025.09.03-10.22.41:552][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_RealtimeAPI.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:581][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_RealtimeAPI.uasset].
+[2025.09.03-10.22.41:586][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_StreamingChatExamples.uasset
+[2025.09.03-10.22.41:607][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_StreamingChatExamples.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:638][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_StreamingChatExamples.uasset].
+[2025.09.03-10.22.41:642][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_StructuredOutputExamples.uasset
+[2025.09.03-10.22.41:651][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_StructuredOutputExamples.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:666][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/QuickExamples/BP_StructuredOutputExamples.uasset].
+[2025.09.03-10.22.41:670][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/BP_ChatAPIWidgetLink.uasset
+[2025.09.03-10.22.41:699][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/BP_ChatAPIWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:702][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/BP_ChatAPIWidgetLink.uasset].
+[2025.09.03-10.22.41:711][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/BP_OpenAiChatAPIWidgetLink.uasset
+[2025.09.03-10.22.41:736][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/BP_OpenAiChatAPIWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:739][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/BP_OpenAiChatAPIWidgetLink.uasset].
+[2025.09.03-10.22.41:748][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Audio/BP_GoogleAudioWidgetLink.uasset
+[2025.09.03-10.22.41:763][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Audio/BP_GoogleAudioWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:783][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Audio/BP_GoogleAudioWidgetLink.uasset].
+[2025.09.03-10.22.41:788][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Audio/BP_OpenAIAudioWidgetLink.uasset
+[2025.09.03-10.22.41:803][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Audio/BP_OpenAIAudioWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:818][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Audio/BP_OpenAIAudioWidgetLink.uasset].
+[2025.09.03-10.22.41:823][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_AnthropicChatAPIWidgetLink.uasset
+[2025.09.03-10.22.41:850][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_AnthropicChatAPIWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:884][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_AnthropicChatAPIWidgetLink.uasset].
+[2025.09.03-10.22.41:889][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_DeepseekChatAPIWidgetLink.uasset
+[2025.09.03-10.22.41:904][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_DeepseekChatAPIWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:929][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_DeepseekChatAPIWidgetLink.uasset].
+[2025.09.03-10.22.41:933][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_GoogleChatAPIWidgetLink.uasset
+[2025.09.03-10.22.41:952][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_GoogleChatAPIWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.41:980][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_GoogleChatAPIWidgetLink.uasset].
+[2025.09.03-10.22.41:984][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_OpenAiChatAPIWidgetLink.uasset
+[2025.09.03-10.22.42:006][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_OpenAiChatAPIWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:036][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_OpenAiChatAPIWidgetLink.uasset].
+[2025.09.03-10.22.42:043][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_XAIChatAPIWidgetLink.uasset
+[2025.09.03-10.22.42:056][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_XAIChatAPIWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:074][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Chat/BP_XAIChatAPIWidgetLink.uasset].
+[2025.09.03-10.22.42:078][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Image/BP_GoogleImgGenWidgetLink.uasset
+[2025.09.03-10.22.42:086][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Image/BP_GoogleImgGenWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:096][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Image/BP_GoogleImgGenWidgetLink.uasset].
+[2025.09.03-10.22.42:100][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Image/BP_OpenAIImgGenWidgetLink.uasset
+[2025.09.03-10.22.42:108][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Image/BP_OpenAIImgGenWidgetLink.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:119][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/WidgetLinkedExamples/Image/BP_OpenAIImgGenWidgetLink.uasset].
+[2025.09.03-10.22.42:123][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/Widgets/W_ChatExamplBP.uasset
+[2025.09.03-10.22.42:521][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/Widgets/W_ChatExamplBP.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:626][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/Widgets/W_ChatExamplBP.uasset].
+[2025.09.03-10.22.42:730][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/FX_KeepAlive.uasset
+[2025.09.03-10.22.42:730][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/FX_KeepAlive.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:733][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/FX_KeepAlive.uasset].
+[2025.09.03-10.22.42:736][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/MicSubmix.uasset
+[2025.09.03-10.22.42:741][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/MicSubmix.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:744][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/MicSubmix.uasset].
+[2025.09.03-10.22.42:748][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/SubmixToRemoveOP1.uasset
+[2025.09.03-10.22.42:752][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/SubmixToRemoveOP1.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:754][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/SubmixToRemoveOP1.uasset].
+[2025.09.03-10.22.42:758][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/voice.uasset
+[2025.09.03-10.22.42:761][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/voice.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:766][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Audio/voice.uasset].
+[2025.09.03-10.22.42:773][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-Italic-VariableFont_wdth_wght.uasset
+[2025.09.03-10.22.42:774][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-Italic-VariableFont_wdth_wght.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:778][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-Italic-VariableFont_wdth_wght.uasset].
+[2025.09.03-10.22.42:781][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-Italic-VariableFont_wdth_wght_Font.uasset
+[2025.09.03-10.22.42:785][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-Italic-VariableFont_wdth_wght_Font.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:788][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-Italic-VariableFont_wdth_wght_Font.uasset].
+[2025.09.03-10.22.42:792][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-VariableFont_wdth_wght.uasset
+[2025.09.03-10.22.42:793][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-VariableFont_wdth_wght.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:797][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-VariableFont_wdth_wght.uasset].
+[2025.09.03-10.22.42:800][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-VariableFont_wdth_wght_Font.uasset
+[2025.09.03-10.22.42:805][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-VariableFont_wdth_wght_Font.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:808][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Fonts/Roboto-VariableFont_wdth_wght_Font.uasset].
+[2025.09.03-10.22.42:812][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Game/GS_ExampleState.uasset
+[2025.09.03-10.22.42:817][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Game/GS_ExampleState.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:823][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Game/GS_ExampleState.uasset].
+[2025.09.03-10.22.42:828][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/ai.uasset
+[2025.09.03-10.22.42:830][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/ai.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:837][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/ai.uasset].
+[2025.09.03-10.22.42:840][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/chat.uasset
+[2025.09.03-10.22.42:842][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/chat.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:846][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/chat.uasset].
+[2025.09.03-10.22.42:850][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/check-mark.uasset
+[2025.09.03-10.22.42:851][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/check-mark.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:855][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/check-mark.uasset].
+[2025.09.03-10.22.42:858][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/image__3_.uasset
+[2025.09.03-10.22.42:859][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/image__3_.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:864][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/image__3_.uasset].
+[2025.09.03-10.22.42:871][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/loading.uasset
+[2025.09.03-10.22.42:872][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/loading.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:876][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/loading.uasset].
+[2025.09.03-10.22.42:880][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/mic.uasset
+[2025.09.03-10.22.42:881][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/mic.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:885][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/mic.uasset].
+[2025.09.03-10.22.42:888][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/play-button-arrowhead.uasset
+[2025.09.03-10.22.42:889][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/play-button-arrowhead.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:893][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/play-button-arrowhead.uasset].
+[2025.09.03-10.22.42:896][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/send.uasset
+[2025.09.03-10.22.42:898][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/send.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:902][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/send.uasset].
+[2025.09.03-10.22.42:905][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/stop-button.uasset
+[2025.09.03-10.22.42:906][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/stop-button.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:910][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/stop-button.uasset].
+[2025.09.03-10.22.42:914][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/undo.uasset
+[2025.09.03-10.22.42:915][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/undo.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:919][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/undo.uasset].
+[2025.09.03-10.22.42:923][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/user.uasset
+[2025.09.03-10.22.42:924][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/user.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:928][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/user.uasset].
+[2025.09.03-10.22.42:932][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/volume.uasset
+[2025.09.03-10.22.42:934][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/volume.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:946][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Icons/volume.uasset].
+[2025.09.03-10.22.42:952][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/141756430.uasset
+[2025.09.03-10.22.42:954][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/141756430.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:964][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/141756430.uasset].
+[2025.09.03-10.22.42:968][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/5563098.uasset
+[2025.09.03-10.22.42:969][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/5563098.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.42:997][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/5563098.uasset].
+[2025.09.03-10.22.43:001][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/rm218batch4-ning-24.uasset
+[2025.09.03-10.22.43:003][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/rm218batch4-ning-24.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:021][  0]LogTexture: Display: Waiting for textures to be ready 0/1 (/Game/Common/Images/rm218batch4-ning-24) ...
+[2025.09.03-10.22.43:104][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/rm218batch4-ning-24.uasset].
+[2025.09.03-10.22.43:160][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/v904-nunny-012__2_.uasset
+[2025.09.03-10.22.43:162][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/v904-nunny-012__2_.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:180][  0]LogTexture: Display: Waiting for textures to be ready 0/1 (/Game/Common/Images/v904-nunny-012__2_) ...
+[2025.09.03-10.22.43:232][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Images/v904-nunny-012__2_.uasset].
+[2025.09.03-10.22.43:275][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Materials/ImageGenTestMat.uasset
+[2025.09.03-10.22.43:278][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Materials/ImageGenTestMat.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:282][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Materials/ImageGenTestMat.uasset].
+[2025.09.03-10.22.43:288][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Materials/ImageGenTestMat_Inst.uasset
+[2025.09.03-10.22.43:292][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Materials/ImageGenTestMat_Inst.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:295][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Materials/ImageGenTestMat_Inst.uasset].
+[2025.09.03-10.22.43:301][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_AudioTTS.uasset
+[2025.09.03-10.22.43:345][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_AudioTTS.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:390][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_AudioTTS.uasset].
+[2025.09.03-10.22.43:483][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ChatBubble.uasset
+[2025.09.03-10.22.43:507][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ChatBubble.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:525][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ChatBubble.uasset].
+[2025.09.03-10.22.43:531][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ChatWindow.uasset
+[2025.09.03-10.22.43:594][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ChatWindow.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:636][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ChatWindow.uasset].
+[2025.09.03-10.22.43:734][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ImageGen.uasset
+[2025.09.03-10.22.43:751][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ImageGen.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:774][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_ImageGen.uasset].
+[2025.09.03-10.22.43:877][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_Loading.uasset
+[2025.09.03-10.22.43:881][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_Loading.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.43:886][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_Loading.uasset].
+[2025.09.03-10.22.43:891][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_OptionsWindow.uasset
+[2025.09.03-10.22.43:963][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_OptionsWindow.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.44:020][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_OptionsWindow.uasset].
+[2025.09.03-10.22.44:085][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_RealtimeConversation.uasset
+[2025.09.03-10.22.44:110][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_RealtimeConversation.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.44:148][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_RealtimeConversation.uasset].
+[2025.09.03-10.22.44:246][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_StructuredOutput.uasset
+[2025.09.03-10.22.44:287][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_StructuredOutput.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.44:313][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/Widgets/W_StructuredOutput.uasset].
+[2025.09.03-10.22.44:429][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/GM_ExampleModeCPP.uasset
+[2025.09.03-10.22.44:769][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/GM_ExampleModeCPP.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.44:780][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/GM_ExampleModeCPP.uasset].
+[2025.09.03-10.22.44:883][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/Widgets/W_ChatExampleCpp.uasset
+[2025.09.03-10.22.45:152][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/Widgets/W_ChatExampleCpp.uasset] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.45:264][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/Widgets/W_ChatExampleCpp.uasset].
+[2025.09.03-10.22.45:369][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/BlueprintsExampleLevel.umap
+[2025.09.03-10.22.46:065][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/BlueprintsExampleLevel.umap] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.46:200][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/BlueprintsExample/BlueprintsExampleLevel.umap].
+[2025.09.03-10.22.46:313][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/EntryMap.umap
+[2025.09.03-10.22.46:342][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/EntryMap.umap] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.46:357][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/Common/EntryMap.umap].
+[2025.09.03-10.22.46:365][  0]LogContentCommandlet: Display: Loading ../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/CppExampleLevel.umap
+[2025.09.03-10.22.46:678][  0]LogContentCommandlet: Display: Resaving package [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/CppExampleLevel.umap] (UE Version: 1008, Licensee Version: 0  Saved UE Version: 1009, Saved Licensee Version: 0)
+[2025.09.03-10.22.46:699][  0]LogContentCommandlet: Display: Correctly saved:  [../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Content/CppExample/CppExampleLevel.umap].
+[2025.09.03-10.22.46:821][  0]LogContentCommandlet: Display: [REPORT] 61/61 packages were considered for resaving
+[2025.09.03-10.22.46:821][  0]LogContentCommandlet: Display: [REPORT] 61/61 packages were resaved
+[2025.09.03-10.22.46:821][  0]LogContentCommandlet: Display: [REPORT] 0/61 packages were deleted
+[2025.09.03-10.22.46:821][  0]LogInit: Display:
+[2025.09.03-10.22.46:822][  0]LogInit: Display: Warning/Error Summary (Unique only)
+[2025.09.03-10.22.46:822][  0]LogInit: Display: -----------------------------------
+[2025.09.03-10.22.46:822][  0]LogInit: Display: LogPluginManager: Warning: Plugin 'GenAIForUnreal' requires engine version '5.1.0' and may not be compatible with the current current engine version '5.3.0-27405482+++UE5+Release-5.3'
+[2025.09.03-10.22.46:822][  0]LogInit: Display: LogStreaming: Warning: Failed to read file '../../../../../../Core/Code/Ship/FabBuilding/.temp_stage_20250903_111924/Ex5.3/Saved/Config/GenAI/secureconfig.bin' error.
+[2025.09.03-10.22.46:822][  0]LogInit: Display:
+[2025.09.03-10.22.46:823][  0]LogInit: Display: Success - 0 error(s), 3 warning(s)
+[2025.09.03-10.22.46:823][  0]LogInit: Display:
+
+Execution of commandlet took:  8.77 seconds
+[2025.09.03-10.22.47:345][  0]LogShaderCompilers: Display: ================================================
+[2025.09.03-10.22.47:345][  0]LogShaderCompilers: Display: === FShaderJobCache stats ===
+[2025.09.03-10.22.47:345][  0]LogShaderCompilers: Display: Total job queries 16, among them cache hits 0 (0.00%)
+[2025.09.03-10.22.47:345][  0]LogShaderCompilers: Display: Tracking 16 distinct input hashes that result in 13 distinct outputs (81.25%)
+[2025.09.03-10.22.47:346][  0]LogShaderCompilers: Display: RAM used: 337.85 KiB of 819.20 MiB budget. Usage: 0.04%
+[2025.09.03-10.22.47:346][  0]LogShaderCompilers: Display: === Shader Compilation stats ===
+[2025.09.03-10.22.47:346][  0]LogShaderCompilers: Display: Shaders Compiled: 16
+[2025.09.03-10.22.47:346][  0]LogShaderCompilers: Display: Jobs assigned 16, completed 16 (100%)
+[2025.09.03-10.22.47:346][  0]LogShaderCompilers: Display: Time job spent in pending queue: average 0.07 s, longest 0.07 s
+[2025.09.03-10.22.47:346][  0]LogShaderCompilers: Display: Job execution time: average 1.21 s, max 1.33 s
+[2025.09.03-10.22.47:346][  0]LogShaderCompilers: Display: Job life time (pending + execution): average 1.29 s, max 1.40
+[2025.09.03-10.22.47:347][  0]LogShaderCompilers: Display: Shader code size: average 42.711 KiB, min 31.809 KiB, max 61.465 KiB
+[2025.09.03-10.22.47:347][  0]LogShaderCompilers: Display: Time at least one job was in flight (either pending or executed): 1.40 s
+[2025.09.03-10.22.47:347][  0]LogShaderCompilers: Display: Jobs were issued in 8 batches (only local compilation was used), average 2.00 jobs/batch
+[2025.09.03-10.22.47:347][  0]LogShaderCompilers: Display: Average processing rate: 11.43 jobs/sec
+[2025.09.03-10.22.47:347][  0]LogShaderCompilers: Display: Total thread time: 4.772 s
+[2025.09.03-10.22.47:348][  0]LogShaderCompilers: Display: Total thread preprocess time: 0.471 s
+[2025.09.03-10.22.47:348][  0]LogShaderCompilers: Display: Percentage time preprocessing: 9.87%
+[2025.09.03-10.22.47:348][  0]LogShaderCompilers: Display: Effective parallelization: 3.41 (times faster than compiling all shaders on one thread). Compare with number of workers: 12                                                          [2025.09.03-10.22.47:348][  0]LogShaderCompilers: Display: Top 5 most expensive shader types by average time:           [2025.09.03-10.22.47:348][  0]LogShaderCompilers: Display:        TBasePassPSFCachedPointIndirectLightingPolicySkylight (compiled    1 times, average 0.39 sec, max 0.39 sec, min 0.39 sec)                                                     [2025.09.03-10.22.47:349][  0]LogShaderCompilers: Display:       TBasePassPSFCachedVolumeIndirectLightingPolicySkylight (compiled    1 times, average 0.37 sec, max 0.37 sec, min 0.37 sec)                                                     [2025.09.03-10.22.47:349][  0]LogShaderCompilers: Display: TBasePassPSFPrecomputedVolumetricLightmapLightingPolicySkylight (compiled    1 times, average 0.35 sec, max 0.35 sec, min 0.35 sec)
+[2025.09.03-10.22.47:349][  0]LogShaderCompilers: Display:               TBasePassPSFCachedVolumeIndirectLightingPolicy (compiled    1 times, average 0.34 sec, max 0.34 sec, min 0.34 sec)
+[2025.09.03-10.22.47:349][  0]LogShaderCompilers: Display:                                 TBasePassPSFNoLightMapPolicy (compiled    1 times, average 0.34 sec, max 0.34 sec, min 0.34 sec)
+[2025.09.03-10.22.47:349][  0]LogShaderCompilers: Display: Top 5 shader types by total compile time:
+[2025.09.03-10.22.47:350][  0]LogShaderCompilers: Display:        TBasePassPSFCachedPointIndirectLightingPolicySkylight - 8.26% of total time (compiled    1 times, average 0.39 sec, max 0.39 sec, min 0.39 sec)
+[2025.09.03-10.22.47:350][  0]LogShaderCompilers: Display:       TBasePassPSFCachedVolumeIndirectLightingPolicySkylight - 7.79% of total time (compiled    1 times, average 0.37 sec, max 0.37 sec, min 0.37 sec)
+[2025.09.03-10.22.47:350][  0]LogShaderCompilers: Display: TBasePassPSFPrecomputedVolumetricLightmapLightingPolicySkylight - 7.26% of total time (compiled    1 times, average 0.35 sec, max 0.35 sec, min 0.35 sec)
+[2025.09.03-10.22.47:350][  0]LogShaderCompilers: Display:               TBasePassPSFCachedVolumeIndirectLightingPolicy - 7.17% of total time (compiled    1 times, average 0.34 sec, max 0.34 sec, min 0.34 sec)
+[2025.09.03-10.22.47:351][  0]LogShaderCompilers: Display:                                 TBasePassPSFNoLightMapPolicy - 7.04% of total time (compiled    1 times, average 0.34 sec, max 0.34 sec, min 0.34 sec)
+[2025.09.03-10.22.47:351][  0]LogShaderCompilers: Display: ================================================
+[2025.09.03-10.22.47:410][  0]LogShaderCompilers: Display: Shaders left to compile 0
+[5/6] Packaging C++ Example...
+C++ example created at: C:\Core\Code\Ship\FabBuilding\.\Builds\GenAIExample_v1.3.0.1_CPP_UE5.3.zip
+[6/6] Creating and packaging Blueprint-only example...
+Blueprint example created at: C:\Core\Code\Ship\FabBuilding\.\Builds\GenAIExample_v1.3.0.1_BP_UE5.3.zip

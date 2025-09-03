@@ -20,7 +20,13 @@ param (
     [string]$OutputDirectory, # This is the temporary staging directory
 
     [Parameter(Mandatory=$true)]
-    [string]$FinalOutputDir   # This is the final /Builds directory
+    [string]$FinalOutputDir,   # This is the final /Builds directory
+
+    [Parameter(Mandatory=$false)]
+    [string]$EngineVersion,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$UseCache
 )
 
 # --- PREPARATION ---
@@ -37,12 +43,19 @@ if (-not (Test-Path $MasterProjectDir)) {
 $MasterUProjectFile = Get-ChildItem -Path $MasterProjectDir -Filter "*.uproject" | Select-Object -First 1
 $MasterProjectName = $MasterUProjectFile.BaseName
 
+# Define path for the GLOBAL BuildConfiguration.xml
+$UserBuildConfigDir = Join-Path -Path $HOME -ChildPath "Documents/Unreal Engine/UnrealBuildTool"
+$UserBuildConfigPath = Join-Path -Path $UserBuildConfigDir -ChildPath "BuildConfiguration.xml"
+$UserBuildConfigBackupPath = Join-Path -Path $UserBuildConfigDir -ChildPath "BuildConfiguration.xml.bak"
+
 # --- MAIN EXECUTION LOOP ---
-foreach ($EngineVersion in $Config.EngineVersions) {
+$VersionsToProcess = if (-not [string]::IsNullOrEmpty($EngineVersion)) { @($EngineVersion) } else { $Config.EngineVersions }
+
+foreach ($CurrentEngineVersion in $VersionsToProcess) {
     $CurrentStage = "SETUP"
-    $LogFile = Join-Path -Path $LogsDir -ChildPath "Log_ExampleProject_UE_${EngineVersion}.txt"
-    $EnginePath = Join-Path -Path $Config.UnrealEngineBasePath -ChildPath "UE_$EngineVersion"
-    $TempProjectDir = Join-Path -Path $OutputDirectory -ChildPath "Ex$($EngineVersion)"
+    $LogFile = Join-Path -Path $LogsDir -ChildPath "Log_ExampleProject_UE_${CurrentEngineVersion}.txt"
+    $EnginePath = Join-Path -Path $Config.UnrealEngineBasePath -ChildPath "UE_$CurrentEngineVersion"
+    $TempProjectDir = Join-Path -Path $OutputDirectory -ChildPath "Ex$($CurrentEngineVersion)"
     
     # --- Get Project Version from DefaultGame.ini ---
     $ProjectVersion = "1.0" # Default version
@@ -56,18 +69,58 @@ foreach ($EngineVersion in $Config.EngineVersions) {
     }
 
     Write-Host "`n-----------------------------------------------------------------" -ForegroundColor Yellow
-    Write-Host " [EXAMPLE] Processing UE $EngineVersion for Project v$ProjectVersion" -ForegroundColor Yellow
+    Write-Host " [EXAMPLE] Processing UE $CurrentEngineVersion for Project v$ProjectVersion" -ForegroundColor Yellow
     Write-Host "-----------------------------------------------------------------"
+
+    # --- CACHE CHECK ---
+    $CppExampleExists = $true # Default to true if not generated
+    $BpExampleExists = $true  # Default to true if not generated
+
+    if ($Config.ExampleProject.GenerateCppExample) {
+        $FinalCppZipPath = Join-Path -Path $FinalOutputDir -ChildPath "$($MasterProjectName)_v$($ProjectVersion)_CPP_UE$($CurrentEngineVersion).zip"
+        $CppExampleExists = Test-Path $FinalCppZipPath
+    }
+    if ($Config.ExampleProject.GenerateBlueprintExample) {
+        $FinalBpZipPath = Join-Path -Path $FinalOutputDir -ChildPath "$($MasterProjectName)_v$($ProjectVersion)_BP_UE$($CurrentEngineVersion).zip"
+        $BpExampleExists = Test-Path $FinalBpZipPath
+    }
+
+    if ($UseCache.IsPresent -and $CppExampleExists -and $BpExampleExists) {
+        Write-Host "[CACHE] Skipping UE $CurrentEngineVersion because all example project outputs already exist." -ForegroundColor Cyan
+        continue
+    }
 
     try {
         if (-not (Test-Path $EnginePath)) { throw "[SKIP] Engine not found at '$EnginePath'" }
 
+        # --- SETUP BUILD CONFIG ---
+        New-Item -Path $UserBuildConfigDir -ItemType Directory -Force | Out-Null
+        if (Test-Path $UserBuildConfigPath) {
+            Rename-Item -Path $UserBuildConfigPath -NewName "BuildConfiguration.xml.bak" -Force
+        }
+        
+        $ToolchainVersion = switch ($CurrentEngineVersion) {
+            "5.1" { "14.32.31326" } 
+            "5.2" { "14.34.31933" } 
+            "5.3" { "14.36.32532" } 
+            "5.4" { "14.38.33130" } 
+            "5.5" { "14.38.33130" } 
+            "5.6" { "14.40.33807" } 
+            default { "Latest" }
+        }
+        @"
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration xmlns="https://www.unrealengine.com/BuildConfiguration">
+    <WindowsPlatform>
+        <CompilerVersion>$($ToolchainVersion)</CompilerVersion>
+    </WindowsPlatform>
+</Configuration>
+"@ | Out-File -FilePath $UserBuildConfigPath -Encoding utf8
+
         # --- 1. COPY MASTER PROJECT (SMART COPY) ---
         $CurrentStage = "COPY"
-        Write-Host "[1/6] Copying master project..."
+        Write-Host "[1/7] Copying master project..."
         
-        # Exclude IDE files and other non-distributable artifacts.
-        # The plugin IS included at this stage so the project can compile.
         $ExcludeDirs = @( ".git", ".vs", ".idea", ".vscode", "Binaries", "Build", "Intermediate", "Saved", "DerivedDataCache", "__pycache__", "Platforms" )
         $ExcludeFiles = @( "*.sln", "*.suo", "*.VC.db", "*.DotSettings.user", ".vsconfig", "GEMINI.md", ".gitignore", ".gitmodules" )
         if ($Config.ExampleProject.ExcludeFiles) {
@@ -79,54 +132,58 @@ foreach ($EngineVersion in $Config.EngineVersions) {
 
         $TempUProjectPath = Join-Path -Path $TempProjectDir -ChildPath $MasterUProjectFile.Name
         
-        # --- 2. COMPILE PLUGIN (if included) ---
-        # This step is now only for projects that are shipped WITH the plugin.
-        # If ExcludePlugin is true, we assume the user has the plugin installed in the engine.
+        # --- 2. UPDATE UPLUGIN FILE VERSION ---
+        $CurrentStage = "UPDATE_UPLUGIN"
+        Write-Host "[2/7] Updating .uplugin file version for UE $CurrentEngineVersion..."
+        $PluginUpluginPath = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)\$($Config.PluginName).uplugin"
+        if (Test-Path $PluginUpluginPath) {
+            $PluginJson = Get-Content -Raw -Path $PluginUpluginPath | ConvertFrom-Json
+            $PluginJson.EngineVersion = "$($CurrentEngineVersion).0"
+            $PluginJson | ConvertTo-Json -Depth 10 | Out-File -FilePath $PluginUpluginPath -Encoding utf8
+            Write-Host "Set EngineVersion to $CurrentEngineVersion in .uplugin file." -ForegroundColor Green
+        } else {
+            Write-Host "No .uplugin file found to update." -ForegroundColor Gray
+        }
+
+        # --- 3. COMPILE PLUGIN (if included) ---
         if (-not $Config.ExampleProject.ExcludePlugin) {
             $CurrentStage = "COMPILE_PLUGIN"
-            Write-Host "[2/6] Compiling plugin for UE $EngineVersion..."
+            Write-Host "[3/7] Compiling plugin for UE $CurrentEngineVersion..."
             
             $PluginDir = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
-            $PluginUpluginPath = Join-Path -Path $PluginDir -ChildPath "$($Config.PluginName).uplugin"
             if (-not (Test-Path $PluginUpluginPath)) { throw "Plugin .uplugin file not found at: $PluginUpluginPath" }
-            
-            $PluginJson = Get-Content -Raw -Path $PluginUpluginPath | ConvertFrom-Json
-            $PluginJson.EngineVersion = "$($EngineVersion).0"
-            $PluginJson | ConvertTo-Json -Depth 10 | Out-File -FilePath $PluginUpluginPath -Encoding utf8
             
             $RunUATPath = Join-Path -Path $EnginePath -ChildPath "Engine\Build\BatchFiles\RunUAT.bat"
             & $RunUATPath BuildPlugin -Plugin="$PluginUpluginPath" -Package="$PluginDir\Packages" -TargetPlatforms=Win64 -Rocket | Tee-Object -FilePath $LogFile -Append
-            if ($LASTEXITCODE -ne 0) { throw "Failed to compile plugin for UE $EngineVersion." }
+            if ($LASTEXITCODE -ne 0) { throw "Failed to compile plugin for UE $CurrentEngineVersion." }
         } else {
-            Write-Host "[2/6] Skipping plugin compilation (plugin will be excluded from final package)." -ForegroundColor Gray
+            Write-Host "[3/7] Skipping plugin compilation (plugin will be excluded from final package)." -ForegroundColor Gray
         }
 
-        # --- 3. BUILD PROJECT (to avoid popups) ---
+        # --- 4. BUILD PROJECT (to avoid popups) ---
         $CurrentStage = "BUILD_PROJECT"
-        Write-Host "[3/6] Building project editor targets for UE $EngineVersion..."
-        $UnrealBuildToolPath = Join-Path -Path $EnginePath -ChildPath "Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll"
-        & "dotnet" $UnrealBuildToolPath ($MasterProjectName + "Editor") Win64 Development -Project="$TempUProjectPath" -iwyu -noubtmakefiles | Tee-Object -FilePath $LogFile -Append
-        if ($LASTEXITCODE -ne 0) { throw "Failed to build project editor targets for UE $EngineVersion." }
+        Write-Host "[4/7] Building project editor targets for UE $CurrentEngineVersion..."
+        $BuildScriptPath = Join-Path -Path $EnginePath -ChildPath "Engine\Build\BatchFiles\Build.bat"
+        & $BuildScriptPath ($MasterProjectName + "Editor") Win64 Development -Project="$TempUProjectPath" | Tee-Object -FilePath $LogFile -Append
+        if ($LASTEXITCODE -ne 0) { throw "Failed to build project editor targets for UE $CurrentEngineVersion." }
 
-        # --- 4. UPGRADE PROJECT ---
+        # --- 5. UPGRADE PROJECT ---
         $CurrentStage = "UPGRADE"
-        Write-Host "[4/6] Upgrading project assets for UE $EngineVersion..."
+        Write-Host "[5/7] Upgrading project assets for UE $CurrentEngineVersion..."
         $UnrealEditorPath = Join-Path -Path $EnginePath -ChildPath "Engine/Binaries/Win64/UnrealEditor-Cmd.exe"
 
-        # Robustly update the engine association in the .uproject file
         $UProjectJson = Get-Content -Raw -Path $TempUProjectPath | ConvertFrom-Json
-        $UProjectJson.EngineAssociation = $EngineVersion
+        $UProjectJson.EngineAssociation = $CurrentEngineVersion
         $UProjectJson | ConvertTo-Json -Depth 10 | Out-File -FilePath $TempUProjectPath -Encoding utf8
 
         & $UnrealEditorPath "$TempUProjectPath" -run=ResavePackages -allowcommandletrendering -autocheckout -projectonly | Tee-Object -FilePath $LogFile -Append
         if ($LASTEXITCODE -ne 0) { throw "Failed to resave/upgrade packages." }
 
-        # --- 5. PACKAGE C++ EXAMPLE (OPTIONAL) ---
+        # --- 6. PACKAGE C++ EXAMPLE (OPTIONAL) ---
         $CurrentStage = "PACKAGE_CPP"
         if ($Config.ExampleProject.GenerateCppExample) {
-            Write-Host "[5/6] Packaging C++ Example..."
+            Write-Host "[6/7] Packaging C++ Example..."
             
-            # --- Pre-Zip Cleanup ---
             "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache" | ForEach-Object {
                 $pathToRemove = Join-Path $TempProjectDir $_
                 if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
@@ -139,31 +196,28 @@ foreach ($EngineVersion in $Config.EngineVersions) {
                 if (Test-Path $PluginDirToRemove) { Remove-Item -Path $PluginDirToRemove -Recurse -Force }
             }
             
-            $FinalZipPath = Join-Path -Path $FinalOutputDir -ChildPath "$($MasterProjectName)_v$($ProjectVersion)_CPP_UE$($EngineVersion).zip"
+            $FinalZipPath = Join-Path -Path $FinalOutputDir -ChildPath "$($MasterProjectName)_v$($ProjectVersion)_CPP_UE$($CurrentEngineVersion).zip"
             Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalZipPath -Force
             Write-Host "C++ example created at: $FinalZipPath" -ForegroundColor Green
         } else {
-             Write-Host "[5/6] Skipping C++ example packaging." -ForegroundColor Gray
+             Write-Host "[6/7] Skipping C++ example packaging." -ForegroundColor Gray
         }
 
-        # --- 6. PACKAGE BLUEPRINT EXAMPLE (OPTIONAL) ---
+        # --- 7. PACKAGE BLUEPRINT EXAMPLE (OPTIONAL) ---
         $CurrentStage = "PACKAGE_BP"
         if ($Config.ExampleProject.GenerateBlueprintExample) {
-            Write-Host "[6/6] Creating and packaging Blueprint-only example..."
+            Write-Host "[7/7] Creating and packaging Blueprint-only example..."
             
-            # --- Pre-Zip Cleanup ---
             "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Source" | ForEach-Object {
                 $pathToRemove = Join-Path $TempProjectDir $_ 
                 if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
             }
             Remove-Item -Path "$TempProjectDir\*.sln" -ErrorAction SilentlyContinue
 
-            # Clean up the project file
             $UProjectJson = Get-Content -Raw -Path $TempUProjectPath | ConvertFrom-Json
             if ($UProjectJson.PSObject.Properties.Name -contains 'Modules') { $UProjectJson.PSObject.Properties.Remove('Modules') }
             $UProjectJson | ConvertTo-Json -Depth 10 | Out-File -FilePath $TempUProjectPath -Encoding utf8
 
-            # If plugin was included, clean it up for BP-only distribution. If excluded, remove the whole folder.
             if ($Config.ExampleProject.ExcludePlugin) {
                 $PluginDirToRemove = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
                 if (Test-Path $PluginDirToRemove) { Remove-Item -Path $PluginDirToRemove -Recurse -Force }
@@ -185,31 +239,23 @@ foreach ($EngineVersion in $Config.EngineVersions) {
                 }
             }
             
-            $FinalZipPath = Join-Path -Path $FinalOutputDir -ChildPath "$($MasterProjectName)_v$($ProjectVersion)_BP_UE$($EngineVersion).zip"
+            $FinalZipPath = Join-Path -Path $FinalOutputDir -ChildPath "$($MasterProjectName)_v$($ProjectVersion)_BP_UE$($CurrentEngineVersion).zip"
             Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalZipPath -Force
             Write-Host "Blueprint example created at: $FinalZipPath" -ForegroundColor Green
         } else {
-            Write-Host "[6/6] Skipping Blueprint example packaging." -ForegroundColor Gray
+            Write-Host "[7/7] Skipping Blueprint example packaging." -ForegroundColor Gray
         }
 
     } catch {
-        Write-Error "`n!!!! EXAMPLE PROJECT FAILED for UE $EngineVersion at stage: $CurrentStage !!!!`n!!!! Error: $($_.Exception.Message)`n!!!! See log for details: $LogFile"
-        $Global:LASTEXITCODE = 1
+        Write-Error "`n!!!! EXAMPLE PROJECT FAILED for UE $CurrentEngineVersion at stage: $CurrentStage !!!!`n!!!! Error: $($_.Exception.Message)`n!!!! See log for details: $LogFile"
+        throw
     } finally {
-        Write-Host "Cleaning up temporary project for UE $EngineVersion..."
+        Write-Host "Cleaning up temporary project for UE $CurrentEngineVersion..."
         if (Test-Path $TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
-    }
-}stinationPath $FinalZipPath -Force
-            Write-Host "Blueprint example created at: $FinalZipPath" -ForegroundColor Green
-        } else {
-            Write-Host "[6/6] Skipping Blueprint example packaging." -ForegroundColor Gray
-        }
 
-    } catch {
-        Write-Error "`n!!!! EXAMPLE PROJECT FAILED for UE $EngineVersion at stage: $CurrentStage !!!!`n!!!! Error: $($_.Exception.Message)`n!!!! See log for details: $LogFile"
-        $Global:LASTEXITCODE = 1
-    } finally {
-        Write-Host "Cleaning up temporary project for UE $EngineVersion..."
-        if (Test-Path $TempProjectDir) { Remove-Item -Recurse -Force -Path $TempProjectDir }
+        if (Test-Path $UserBuildConfigPath) { Remove-Item -Path $UserBuildConfigPath -Force }
+        if (Test-Path $UserBuildConfigBackupPath) {
+            Rename-Item -Path $UserBuildConfigBackupPath -NewName "BuildConfiguration.xml" -Force
+        }
     }
 }

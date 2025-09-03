@@ -26,18 +26,16 @@ param (
     [switch]$SkipEngineValidation
 )
 
-$ValidationErrors = @()
-$ValidationWarnings = @()
+$GlobalSuccess = $true
 
 function Add-ValidationError {
     param([string]$Message)
-    $ValidationErrors += $Message
+    $GlobalSuccess = $false
     Write-Host "[ERROR] $Message" -ForegroundColor Red
 }
 
 function Add-ValidationWarning {
     param([string]$Message)
-    $ValidationWarnings += $Message
     Write-Host "[WARNING] $Message" -ForegroundColor Yellow
 }
 
@@ -54,7 +52,7 @@ Write-Host "`n[1/6] Validating configuration file..." -ForegroundColor Yellow
 
 if (-not (Test-Path $ConfigPath)) {
     Add-ValidationError "Configuration file not found at '$ConfigPath'"
-    exit 1
+    exit 1 # Exit immediately if config is missing
 }
 
 try {
@@ -62,7 +60,7 @@ try {
     Test-ValidationSuccess "Configuration file loaded successfully"
 } catch {
     Add-ValidationError "Invalid JSON in configuration file: $($_.Exception.Message)"
-    exit 1
+    exit 1 # Exit immediately if JSON is invalid
 }
 
 # Required fields validation
@@ -219,34 +217,15 @@ try {
 }
 
 # --- FINAL SUMMARY ---
-Write-Host "`n================================================================="
-Write-Host "VALIDATION SUMMARY:" -ForegroundColor Cyan
-
-if ($ValidationErrors.Count -eq 0) {
+if ($GlobalSuccess) {
+    Write-Host "`n================================================================="
+    Write-Host "VALIDATION SUMMARY:"
     Write-Host "[SUCCESS] Configuration validation PASSED!" -ForegroundColor Green
     Write-Host "Your setup is ready for production use." -ForegroundColor Green
-    
-    if ($ValidationWarnings.Count -gt 0) {
-        Write-Host "`nWarnings found ($($ValidationWarnings.Count)):" -ForegroundColor Yellow
-        foreach ($warning in $ValidationWarnings) {
-            Write-Host "  [WARNING] $warning" -ForegroundColor Yellow
-        }
-    }
-    
     exit 0
 } else {
-    Write-Host "[FAILED] Configuration validation FAILED!" -ForegroundColor Red
-    Write-Host "`nErrors found ($($ValidationErrors.Count)):" -ForegroundColor Red
-    foreach ($validationError in $ValidationErrors) {
-        Write-Host "  [ERROR] $validationError" -ForegroundColor Red
-    }
-    
-    if ($ValidationWarnings.Count -gt 0) {
-        Write-Host "`nWarnings found ($($ValidationWarnings.Count)):" -ForegroundColor Yellow
-        foreach ($warning in $ValidationWarnings) {
-            Write-Host "  [WARNING] $warning" -ForegroundColor Yellow
-        }
-    }
-    
+    Write-Host "`n================================================================="
+    Write-Host "VALIDATION SUMMARY:"
+    Write-Host "[FAILURE] Configuration validation FAILED. Please fix the issues listed above." -ForegroundColor Red
     exit 1
 }
