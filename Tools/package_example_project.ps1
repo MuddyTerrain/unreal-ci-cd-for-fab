@@ -105,7 +105,7 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
             "5.3" { "14.36.32532" } 
             "5.4" { "14.38.33130" } 
             "5.5" { "14.38.33130" } 
-            "5.6" { "14.40.33807" } 
+            "5.6" { "14.38.33130" } 
             default { "Latest" }
         }
         @"
