@@ -26,13 +26,15 @@ param (
     [string]$EngineVersion,
 
     [Parameter(Mandatory=$false)]
-    [switch]$UseCache
+    [switch]$UseCache,
+
+    [Parameter(Mandatory=$true)]
+    [string]$ConfigPath
 )
 
 # --- PREPARATION ---
 $ScriptDir = $PSScriptRoot
 $ProjectRoot = Split-Path -Parent $ScriptDir
-$ConfigPath = Join-Path -Path $ProjectRoot -ChildPath "config.json"
 $Config = Get-Content -Raw -Path $ConfigPath | ConvertFrom-Json
 $MasterProjectDir = $Config.ExampleProject.MasterProjectDirectory
 $LogsDir = Join-Path -Path $ProjectRoot -ChildPath "Logs"
@@ -126,11 +128,43 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
         if ($Config.ExampleProject.ExcludeFiles) {
             $ExcludeFiles += $Config.ExampleProject.ExcludeFiles
         }
+        if ($Config.ExampleProject.ExcludeFolders) {
+            $ExcludeDirs += $Config.ExampleProject.ExcludeFolders
+        }
 
         robocopy $MasterProjectDir $TempProjectDir /E /XD $ExcludeDirs /XF $ExcludeFiles /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
         if ($LASTEXITCODE -gt 7) { throw "Failed to copy master project." }
 
         $TempUProjectPath = Join-Path -Path $TempProjectDir -ChildPath $MasterUProjectFile.Name
+
+        # --- 1.5. EXCLUDE OTHER PLUGINS (NEW STEP) ---
+        $CurrentStage = "EXCLUDE_PLUGINS"
+        if ($Config.ExampleProject.ExcludePluginsFromExample -and $Config.ExampleProject.ExcludePluginsFromExample.Count -gt 0) {
+            Write-Host "[1.5/7] Excluding specified plugins from example project..."
+            
+            $UProjectJson = Get-Content -Raw -Path $TempUProjectPath | ConvertFrom-Json
+            
+            # Filter out the plugins to exclude from the .uproject file
+            $OriginalPluginCount = if ($null -ne $UProjectJson.Plugins) { $UProjectJson.Plugins.Count } else { 0 }
+            if ($null -ne $UProjectJson.Plugins) {
+                $UProjectJson.Plugins = $UProjectJson.Plugins | Where-Object { $Config.ExampleProject.ExcludePluginsFromExample -notcontains $_.Name }
+            }
+            $FinalPluginCount = if ($null -ne $UProjectJson.Plugins) { $UProjectJson.Plugins.Count } else { 0 }
+
+            Write-Host "Removed $($OriginalPluginCount - $FinalPluginCount) plugin reference(s) from .uproject file."
+
+            # Write the modified .uproject back to disk
+            $UProjectJson | ConvertTo-Json -Depth 10 | Out-File -FilePath $TempUProjectPath -Encoding utf8
+
+            # Now, delete the actual plugin folders
+            foreach ($PluginToExclude in $Config.ExampleProject.ExcludePluginsFromExample) {
+                $PluginDirToRemove = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($PluginToExclude)"
+                if (Test-Path $PluginDirToRemove) {
+                    Write-Host "Removing excluded plugin folder: $PluginDirToRemove"
+                    Remove-Item -Path $PluginDirToRemove -Recurse -Force
+                }
+            }
+        }
         
         # --- 2. UPDATE UPLUGIN FILE VERSION ---
         $CurrentStage = "UPDATE_UPLUGIN"
@@ -195,6 +229,17 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
                 $PluginDirToRemove = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
                 if (Test-Path $PluginDirToRemove) { Remove-Item -Path $PluginDirToRemove -Recurse -Force }
             }
+
+            # --- Exclude custom folders for CPP packaging ---
+            if ($Config.ExampleProject.ExcludeFolders) {
+                foreach ($Folder in $Config.ExampleProject.ExcludeFolders) {
+                    $PathToRemove = Join-Path -Path $TempProjectDir -ChildPath $Folder
+                    if (Test-Path $PathToRemove) {
+                        Write-Host "Excluding folder for C++ package: $PathToRemove"
+                        Remove-Item -Recurse -Force -Path $PathToRemove
+                    }
+                }
+            }
             
             $FinalZipPath = Join-Path -Path $FinalOutputDir -ChildPath "$($MasterProjectName)_v$($ProjectVersion)_CPP_UE$($CurrentEngineVersion).zip"
             Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalZipPath -Force
@@ -232,6 +277,17 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
                 }
             }
             
+            # --- Exclude custom folders for BP packaging ---
+            if ($Config.ExampleProject.ExcludeFolders) {
+                foreach ($Folder in $Config.ExampleProject.ExcludeFolders) {
+                    $PathToRemove = Join-Path -Path $TempProjectDir -ChildPath $Folder
+                    if (Test-Path $PathToRemove) {
+                        Write-Host "Excluding folder for Blueprint package: $PathToRemove"
+                        Remove-Item -Recurse -Force -Path $PathToRemove
+                    }
+                }
+            }
+
             if ($Config.ExampleProject.BlueprintOnlyExcludeFolders) {
                 foreach ($ExcludeFolder in $Config.ExampleProject.BlueprintOnlyExcludeFolders) {
                     $FolderToRemove = Join-Path -Path $TempProjectDir -ChildPath $ExcludeFolder

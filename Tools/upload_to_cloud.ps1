@@ -11,13 +11,15 @@
 [CmdletBinding()]
 param (
     [Parameter(Mandatory=$true)]
-    [string]$SourceDirectory
+    [string]$SourceDirectory,
+
+    [Parameter(Mandatory=$true)]
+    [string]$ConfigPath
 )
 
 # --- PREPARATION ---
 $ScriptDir = $PSScriptRoot
 $ProjectRoot = Split-Path -Parent $ScriptDir
-$ConfigPath = Join-Path -Path $ProjectRoot -ChildPath "config.json"
 $Config = Get-Content -Raw -Path $ConfigPath | ConvertFrom-Json
 
 $RcloneConfig = $Config.CloudUpload.RcloneConfigPath

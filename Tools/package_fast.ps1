@@ -23,7 +23,10 @@ param (
     [string]$EngineVersion,
 
     [Parameter(Mandatory=$false)]
-    [switch]$UseCache
+    [switch]$UseCache,
+
+    [Parameter(Mandatory=$true)]
+    [string]$ConfigPath
 )
 
 # --- PREPARATION ---
@@ -32,7 +35,6 @@ $ProjectRoot = Split-Path -Parent $ScriptDir
 $GlobalSuccess = $true
 
 # Load configuration
-$ConfigPath = Join-Path -Path $ProjectRoot -ChildPath "config.json"
 if (-not (Test-Path $ConfigPath)) {
     Write-Error "Configuration file not found at '$ConfigPath'."
     exit 1

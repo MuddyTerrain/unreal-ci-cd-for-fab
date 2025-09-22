@@ -29,9 +29,9 @@ Saved/
 /ExampleProjectBuild_*/
 /Logs/
 
-# Ignore the user's actual configuration file
-# Users should copy the example and edit it.
-/config.json
+# Ignore user configuration files, but not the example
+config*.json
+!config.example.json
 
 # Ignore executables and archives
 *.exe

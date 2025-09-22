@@ -1,248 +1,51 @@
->>>>> THIS IS WHAT THEY WROTE ME:
+{
+  "PluginName": "GenAIForUnreal",
+  "PluginSourceDirectory": "C:/Core/Code/Ship/GenAIExample/Plugins/GenAIForUnreal",
+  "OutputDirectory": "./Builds",
+  "UnrealEngineBasePath": "C:/Program Files/Epic Games",
+  "EngineVersions": [
+    "5.1",
+    "5.2",
+    "5.3",
+    "5.4",
+    "5.5",
+    "5.6"
+  ],
+  "RunTests": false,
+  "AutomationTestFilter": "GenAI",
 
-Gen AI 🔥 (ChatGPT, Gemini, Claude, Grok 4, GPT 5, Chat, NPCs, OpenAI, Google)
-External
-Inbox
+  "ExampleProject": {
+    "Generate": true,
+    "MasterProjectDirectory": "C:/Core/Code/Ship/GenAIExample",
+    "ExcludePlugin": true,
+    "GenerateCppExample": true,
+    "ExcludePluginsFromExample": [ "GenAIChineseModels" ],
+    "GenerateBlueprintExample": true,
+    "BlueprintOnlyExcludeFolders": [
+      "Content/CppExample"
+    ],
+    "ExcludeFolders": [
+      "Plugins/GenAIChineseModels",
+      "Content/BlueprintExampleZh"
+    ],
+    "ExcludeFiles": [ 
+      "Saved/Config/GenAI/secureconfig.bin",  
+      "Saved/Config/GenAIChineseModels/secureconfig.bin", 
+      "Plugins/GenAIForUnreal/Content/secureconfig.bin",
+      "Plugins/GenAIChineseModels/Content/secureconfig.bin",
+      "feed.txt"
+    ]
+  },
 
-FAB Support <fab-support@epicgames.com>
-5:35 PM (0 minutes ago)
-to me
+  "CloudUpload": {
+    "Enable": false,
+    "RcloneExePath": "C:/Users/prajw/Downloads/rclone-v1.70.3-windows-amd64/rclone.exe",
+    "RcloneConfigPath": "C:/Users/prajw/AppData/Roaming/rclone/rclone.conf",
+    "RemoteName": "GoogleDrive",
+    "RemoteFolderPath": "PluginBuilds/GenAIForUnreal"
+  },
 
-FAB
-   
-We have finished reviewing your recent update submission Gen AI 🔥 (ChatGPT, Gemini, Claude, Grok 4, GPT 5, Chat, NPCs, OpenAI, Google) and changes are required before it can be completed.
-
-While attempting to process your file update, we encountered the following errors in 5.1 version:
-
-[4/5] Compile Module.GenAI.5_of_5.cpp
-
-error C2504: 'UBlueprintFunctionLibrary': base class undefined
-
-error C3646: 'Super': unknown override specifier
-
-error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-
-error C2614: 'UGenBlueprintFunctionLibrary': illegal member initialization: 'Super' is not a base or member
-
-error C2440: 'return': cannot convert from 'UGenBlueprintFunctionLibrary *' to 'UObject 
-
-note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-
-We ask that you resolve this issue and update your file link so that we can update your project to its newest version.
-
-Please note, responses to this email are not monitored. If you need further assistance, please submit a new support ticket here and include the Case Number for this update.
-
-Thanks,
-The Fab Team
-
-
-
-
-
-
-
-
-
-
-I did face similar error before at 5.4, then me and you fixedin a different chat convo and moved on, but that fix were only part of newer 5.4+ versions of plugin
-Here is an example log of initial error from 5.4 before the fix: Running AutomationTool...
-Using bundled DotNet SDK version: 6.0.302
-Starting AutomationTool...
-Parsing command line: BuildPlugin -Plugin=C:\Core\Code\Ship\FabBuilding\.\Builds\Temp_5.4\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin -Package=C:\Core\Code\Ship\FabBuilding\.\Builds\Temp_5.4\PackagedPlugin_Raw -TargetPlatforms=Win64 -Rocket
-Initializing script modules...
-Total script module initialization time: 0.89 s.
-Using C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe
-Executing commands...
-Copying 137 file(s) using max 64 thread(s)
-Reading plugin from C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin...
-Building plugin for host platforms: Win64
-Running: C:\Program Files\Epic Games\UE_5.4\Engine\Binaries\ThirdParty\DotNet\6.0.302\windows\dotnet.exe "C:\Program Files\Epic Games\UE_5.4\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UnrealEditor Win64 Development -Project="C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\HostProject.uproject" -plugin="C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin" -noubtmakefiles -manifest="C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Saved\Manifest-UnrealEditor-Win64-Development.xml" -nohotreload -log="C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.4\UBA-UnrealEditor-Win64-Development.txt"
-Log file: C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.4\UBA-UnrealEditor-Win64-Development.txt
-Parsing headers for UnrealEditor
-  Running Internal UnrealHeaderTool C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\HostProject.uproject C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Intermediate\Build\Win64\UnrealEditor\Development\UnrealEditor.uhtmanifest -WarningsAsErrors -installed
-Total of 98 written
-Reflection code generated for UnrealEditor in 1.769607 seconds
-Writing manifest to C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Saved\Manifest-UnrealEditor-Win64-Development.xml
-Building UnrealEditor...
-Using Visual Studio 2022 14.38.33145 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-[Adaptive Build] Excluded from GenAI unity file: GenAI.cpp, RealtimeAudioCaptureComponent.cpp, GenAIMessageStructs.cpp, GenAIModelInfo.cpp, GenAIOrgs.cpp, GenClaudeChatStructs.cpp, GenDeepSeekStructs.cpp, GenGeminiChatStructs.cpp, GenOAIAudioStructs.cpp, GenOAIChatStructs.cpp, GenOAIImageStructs.cpp, GenOAIStreamStructs.cpp, GenAnthropicApiInfo.cpp, GenClaudeChat.cpp, GenDeepSeekApiInfo.cpp, GenDSeekChat.cpp, GenDSeekChatStream.cpp, GenGeminiChat.cpp, GenGeminiChatStream.cpp, GenGoogleApiInfo.cpp, GenGoogleImageGeneration.cpp, GenGoogleTextToSpeech.cpp, GenGoogleTranscription.cpp, GenOAIApiInfo.cpp, GenOAIChat.cpp, GenOAIChatStream.cpp, GenOAIImageGeneration.cpp, GenOAIRealtime.cpp, GenOAIStructuredOpService.cpp, GenOAITextToSpeech.cpp, GenOAITranscription.cpp, GenXAIApiInfo.cpp, GenXAIChat.cpp, GenXAIChatStream.cpp, GenSecureKey.cpp, GenAISettings.cpp, GenAIModelRegistrySubsystem.cpp, GenAIAudioUtils.cpp, GenAIModelOptions.cpp, GenBlueprintFunctionLibrary.cpp, GenGlobalDefinitions.cpp, GenUtils.cpp
-[Adaptive Build] Excluded from GenAIEditor unity file: GenAIEditor.cpp, GenAIEditorStyle.cpp
-[Adaptive Build] Excluded from GenAITests unity file: GenAITests.cpp, AnthropicApiInfoContractTests.cpp, AnthropicClaudeChatContractTests.cpp, DeepSeekApiInfoContractTests.cpp, DeepSeekChatContractTests.cpp, GoogleApiInfoContractTests.cpp, GoogleGeminiChatContractTests.cpp, GoogleImageGenerationContractTests.cpp, GoogleTextToSpeechContractTests.cpp, GoogleTranscriptionContractTests.cpp, OpenAIApiInfoContractTests.cpp, OpenAIContractTests.cpp, OpenAIImageGenerationContractTests.cpp, OpenAIRealtimeContractTests.cpp, OpenAIStructuredOpContractTests.cpp, OpenAITextToSpeechContractTests.cpp, OpenAITranscriptionContractTests.cpp, XAIApiInfoContractTests.cpp, XAIChatContractTests.cpp
-[Adaptive Build] Excluded from GenAIBlueprintNodes unity file: GenAIBlueprintNodes.cpp, GraphNodeMakeGenAISettings.cpp, K2Node_MakeGenAISettings.cpp
-Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
-  Executing up to 8 processes, one per physical core
-  Requested 1.5 GB memory per action, 6.16 GB available: limiting max parallel actions to 4
-Using Parallel executor to run 85 action(s)
------- Building 85 action(s) started ------
-[1/85] Resource Default.rc2
-[2/85] Resource Default.rc2
-[3/85] Resource Default.rc2
-[4/85] Resource Default.rc2
-[5/85] Compile [x64] SharedPCH.UnrealEd.Cpp20.cpp
-[6/85] Compile [x64] GenAIModelInfo.cpp
-[7/85] Compile [x64] GenAI.cpp
-[8/85] Compile [x64] GenAIMessageStructs.cpp
-[9/85] Compile [x64] GenAIModelOptions.cpp
-[10/85] Compile [x64] GenAIOrgs.cpp
-[11/85] Compile [x64] GenAIAudioUtils.cpp
-[12/85] Compile [x64] GenBlueprintFunctionLibrary.cpp
-[13/85] Compile [x64] GenAIModelRegistrySubsystem.cpp
-[14/85] Compile [x64] GenAISettings.cpp
-[15/85] Compile [x64] GenClaudeChatStructs.cpp
-[16/85] Compile [x64] GenAnthropicApiInfo.cpp
-[17/85] Compile [x64] GenClaudeChat.cpp
-[18/85] Compile [x64] GenDSeekChat.cpp
-[19/85] Compile [x64] GenDeepSeekStructs.cpp
-[20/85] Compile [x64] GenDeepSeekApiInfo.cpp
-[21/85] Compile [x64] GenDSeekChatStream.cpp
-[22/85] Compile [x64] GenGlobalDefinitions.cpp
-[23/85] Compile [x64] GenGeminiChatStructs.cpp
-[24/85] Compile [x64] GenGeminiChat.cpp
-[25/85] Compile [x64] GenGeminiChatStream.cpp
-[26/85] Compile [x64] GenGoogleApiInfo.cpp
-[27/85] Compile [x64] GenGoogleImageGeneration.cpp
-[28/85] Compile [x64] GenGoogleTextToSpeech.cpp
-[29/85] Compile [x64] GenOAIAudioStructs.cpp
-[30/85] Compile [x64] GenOAIApiInfo.cpp
-[31/85] Compile [x64] GenGoogleTranscription.cpp
-[32/85] Compile [x64] GenOAIChatStructs.cpp
-[33/85] Compile [x64] GenOAIImageStructs.cpp
-[34/85] Compile [x64] GenOAIChat.cpp
-[35/85] Compile [x64] GenOAIStreamStructs.cpp
-[36/85] Compile [x64] GenOAIImageGeneration.cpp
-[37/85] Compile [x64] GenOAIChatStream.cpp
-[38/85] Compile [x64] GenOAIRealtime.cpp
-[39/85] Compile [x64] GenOAITextToSpeech.cpp
-[40/85] Compile [x64] GenOAIStructuredOpService.cpp
-[41/85] Compile [x64] GenOAITranscription.cpp
-[42/85] Compile [x64] GenSecureKey.cpp
-[43/85] Compile [x64] GenUtils.cpp
-[44/85] Compile [x64] GenXAIApiInfo.cpp
-[45/85] Compile [x64] GenXAIChat.cpp
-[46/85] Compile [x64] GenXAIChatStream.cpp
-[47/85] Compile [x64] Module.GenAI.1.cpp
-[48/85] Compile [x64] Module.GenAI.4.cpp
-[49/85] Compile [x64] Module.GenAI.2.cpp
-[50/85] Compile [x64] Module.GenAI.3.cpp
-[51/85] Compile [x64] GenAIBlueprintNodes.cpp
-[52/85] Compile [x64] Module.GenAIBlueprintNodes.cpp
-[53/85] Compile [x64] RealtimeAudioCaptureComponent.cpp
-[54/85] Link [x64] UnrealEditor-GenAI.lib
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.exp
-[55/85] Link [x64] UnrealEditor-GenAI.dll
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.sup.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAI\UnrealEditor-GenAI.sup.exp
-[56/85] Compile [x64] K2Node_MakeGenAISettings.cpp
-[57/85] Compile [x64] GenAIEditor.cpp
-[58/85] Compile [x64] GenAIEditorStyle.cpp
-[59/85] Link [x64] UnrealEditor-GenAIEditor.lib
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.exp
-[60/85] Compile [x64] AnthropicApiInfoContractTests.cpp
-[61/85] Compile [x64] AnthropicClaudeChatContractTests.cpp
-[62/85] Compile [x64] GraphNodeMakeGenAISettings.cpp
-[63/85] Link [x64] UnrealEditor-GenAIBlueprintNodes.lib
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.exp
-[64/85] Compile [x64] DeepSeekApiInfoContractTests.cpp
-[65/85] Compile [x64] GenAITests.cpp
-[66/85] Compile [x64] DeepSeekChatContractTests.cpp
-[67/85] Link [x64] UnrealEditor-GenAIBlueprintNodes.dll
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.sup.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIBlueprintNodes\UnrealEditor-GenAIBlueprintNodes.sup.exp
-[68/85] Link [x64] UnrealEditor-GenAIEditor.dll
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.sup.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAIEditor\UnrealEditor-GenAIEditor.sup.exp
-[69/85] Compile [x64] GoogleApiInfoContractTests.cpp
-[70/85] Compile [x64] GoogleGeminiChatContractTests.cpp
-[71/85] Compile [x64] GoogleImageGenerationContractTests.cpp
-[72/85] Compile [x64] GoogleTextToSpeechContractTests.cpp
-[73/85] Compile [x64] GoogleTranscriptionContractTests.cpp
-[74/85] Compile [x64] OpenAIApiInfoContractTests.cpp
-[75/85] Compile [x64] OpenAIImageGenerationContractTests.cpp
-[76/85] Compile [x64] OpenAIRealtimeContractTests.cpp
-[77/85] Compile [x64] OpenAIContractTests.cpp
-[78/85] Compile [x64] OpenAITextToSpeechContractTests.cpp
-[79/85] Compile [x64] OpenAITranscriptionContractTests.cpp
-[80/85] Compile [x64] OpenAIStructuredOpContractTests.cpp
-[81/85] Compile [x64] XAIApiInfoContractTests.cpp
-[82/85] Compile [x64] XAIChatContractTests.cpp
-[83/85] Link [x64] UnrealEditor-GenAITests.lib
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.exp
-[84/85] Link [x64] UnrealEditor-GenAITests.dll
-   Creating library C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.sup.lib and object C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Intermediate\Build\Win64\x64\UnrealEditor\Development\GenAITests\UnrealEditor-GenAITests.sup.exp
-[85/85] WriteMetadata UnrealEditor.target
-Total time in Parallel executor: 65.25 seconds
-Total execution time: 107.91 seconds
-Took 108.44s to run dotnet.exe, ExitCode=0
-Building plugin for target platforms: Win64
-Running: C:\Program Files\Epic Games\UE_5.4\Engine\Binaries\ThirdParty\DotNet\6.0.302\windows\dotnet.exe "C:\Program Files\Epic Games\UE_5.4\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" UnrealGame Win64 Development -Project="C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\HostProject.uproject" -plugin="C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\GenAIForUnreal.uplugin" -noubtmakefiles -manifest="C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Saved\Manifest-UnrealGame-Win64-Development.xml" -nohotreload -log="C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.4\UBA-UnrealGame-Win64-Development.txt"
-Log file: C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.4\UBA-UnrealGame-Win64-Development.txt
-Parsing headers for UnrealGame
-  Running Internal UnrealHeaderTool C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\HostProject.uproject C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Intermediate\Build\Win64\UnrealGame\Development\UnrealGame.uhtmanifest -WarningsAsErrors -installed
-Total of 94 written
-Reflection code generated for UnrealGame in 1.1116274 seconds
-Writing manifest to C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Saved\Manifest-UnrealGame-Win64-Development.xml
-Building UnrealGame...
-Using Visual Studio 2022 14.38.33145 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.38.33130) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-[Adaptive Build] Excluded from GenAI unity file: GenAI.cpp, RealtimeAudioCaptureComponent.cpp, GenAIMessageStructs.cpp, GenAIModelInfo.cpp, GenAIOrgs.cpp, GenClaudeChatStructs.cpp, GenDeepSeekStructs.cpp, GenGeminiChatStructs.cpp, GenOAIAudioStructs.cpp, GenOAIChatStructs.cpp, GenOAIImageStructs.cpp, GenOAIStreamStructs.cpp, GenAnthropicApiInfo.cpp, GenClaudeChat.cpp, GenDeepSeekApiInfo.cpp, GenDSeekChat.cpp, GenDSeekChatStream.cpp, GenGeminiChat.cpp, GenGeminiChatStream.cpp, GenGoogleApiInfo.cpp, GenGoogleImageGeneration.cpp, GenGoogleTextToSpeech.cpp, GenGoogleTranscription.cpp, GenOAIApiInfo.cpp, GenOAIChat.cpp, GenOAIChatStream.cpp, GenOAIImageGeneration.cpp, GenOAIRealtime.cpp, GenOAIStructuredOpService.cpp, GenOAITextToSpeech.cpp, GenOAITranscription.cpp, GenXAIApiInfo.cpp, GenXAIChat.cpp, GenXAIChatStream.cpp, GenSecureKey.cpp, GenAISettings.cpp, GenAIModelRegistrySubsystem.cpp, GenAIAudioUtils.cpp, GenAIModelOptions.cpp, GenBlueprintFunctionLibrary.cpp, GenGlobalDefinitions.cpp, GenUtils.cpp
-Determining max actions to execute in parallel (8 physical cores, 16 logical cores)
-  Executing up to 8 processes, one per physical core
-  Requested 1.5 GB memory per action, 6.78 GB available: limiting max parallel actions to 4
-Using Parallel executor to run 46 action(s)
------- Building 46 action(s) started ------
-[1/46] Compile [x64] GenAIModelInfo.cpp
-[2/46] Compile [x64] GenAI.cpp
-[3/46] Compile [x64] GenAIMessageStructs.cpp
-[4/46] Compile [x64] GenAIAudioUtils.cpp
-[5/46] Compile [x64] GenAIOrgs.cpp
-[6/46] Compile [x64] GenAIModelRegistrySubsystem.cpp
-[7/46] Compile [x64] GenAIModelOptions.cpp
-[8/46] Compile [x64] GenAISettings.cpp
-[9/46] Compile [x64] GenBlueprintFunctionLibrary.cpp
-C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Source\GenAI\Public\Utilities\GenBlueprintFunctionLibrary.h(15): error C2504: 'UBlueprintFunctionLibrary': base class undefined
-C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Source\GenAI\Public\Utilities\GenBlueprintFunctionLibrary.h(17): error C3646: 'Super': unknown override specifier
-C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Source\GenAI\Public\Utilities\GenBlueprintFunctionLibrary.h(17): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Source\GenAI\Public\Utilities\GenBlueprintFunctionLibrary.h(17): error C2440: 'return': cannot convert from 'UGenBlueprintFunctionLibrary *' to 'UObject *'
-C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Source\GenAI\Public\Utilities\GenBlueprintFunctionLibrary.h(17): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or parenthesized function-style cast
-[10/46] Compile [x64] GenAnthropicApiInfo.cpp
-[11/46] Compile [x64] GenClaudeChat.cpp
-[12/46] Compile [x64] GenClaudeChatStructs.cpp
-[13/46] Compile [x64] GenDSeekChat.cpp
-[14/46] Compile [x64] GenDeepSeekStructs.cpp
-[15/46] Compile [x64] GenDeepSeekApiInfo.cpp
-[16/46] Compile [x64] GenDSeekChatStream.cpp
-[17/46] Compile [x64] GenGeminiChat.cpp
-[18/46] Compile [x64] GenGlobalDefinitions.cpp
-[19/46] Compile [x64] GenGeminiChatStream.cpp
-[20/46] Compile [x64] GenGeminiChatStructs.cpp
-[21/46] Compile [x64] GenGoogleApiInfo.cpp
-[22/46] Compile [x64] GenGoogleImageGeneration.cpp
-[23/46] Compile [x64] GenGoogleTextToSpeech.cpp
-[24/46] Compile [x64] GenOAIApiInfo.cpp
-[25/46] Compile [x64] GenGoogleTranscription.cpp
-[26/46] Compile [x64] GenOAIAudioStructs.cpp
-[27/46] Compile [x64] GenOAIChat.cpp
-[28/46] Compile [x64] GenOAIChatStructs.cpp
-[29/46] Compile [x64] GenOAIChatStream.cpp
-[30/46] Compile [x64] GenOAIImageGeneration.cpp
-[31/46] Compile [x64] GenOAIImageStructs.cpp
-[32/46] Compile [x64] GenOAIStreamStructs.cpp
-[33/46] Compile [x64] GenOAIRealtime.cpp
-[34/46] Compile [x64] GenOAITextToSpeech.cpp
-[35/46] Compile [x64] GenSecureKey.cpp
-[36/46] Compile [x64] GenOAITranscription.cpp
-[37/46] Compile [x64] GenOAIStructuredOpService.cpp
-[38/46] Compile [x64] GenUtils.cpp
-C:\Core\Code\Ship\FabBuilding\Builds\Temp_5.4\PackagedPlugin_Raw\HostProject\Plugins\GenAIForUnreal\Source\GenAI\Private\Utilities\GenUtils.cpp(77): error C2027: use of undefined type 'UWorld'
-C:\Program Files\Epic Games\UE_5.4\Engine\Source\Runtime\Core\Public\Modules\ModuleManager.h(32): note: see declaration of 'UWorld'
-[39/46] Compile [x64] GenXAIApiInfo.cpp
-[40/46] Compile [x64] GenXAIChatStream.cpp
-[41/46] Compile [x64] GenXAIChat.cpp
-[42/46] Compile [x64] Module.GenAI.1.cpp
-[43/46] Compile [x64] Module.GenAI.2.cpp
-[44/46] Compile [x64] Module.GenAI.3.cpp
-[45/46] Compile [x64] Module.GenAI.4.cpp
-[46/46] Compile [x64] RealtimeAudioCaptureComponent.cpp
-Total time in Parallel executor: 65.47 seconds
-Total execution time: 70.43 seconds
-Took 70.55s to run dotnet.exe, ExitCode=6
-UnrealBuildTool failed. See log for more details. (C:\Users\prajw\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Program+Files+Epic+Games+UE_5.4\UBA-UnrealGame-Win64-Development.txt)
-AutomationTool executed for 0h 3m 1s
-AutomationTool exiting with ExitCode=6 (6)
-BUILD FAILED
+  "BuildOptions": {
+    "SkipPluginBuild": false
+  }
+}

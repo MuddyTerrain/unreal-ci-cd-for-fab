@@ -68,9 +68,9 @@ Before configuring, ensure your system meets all requirements:
 
 ### 2. Create Your Configuration
 
-Copy the `config.example.json` file and rename it to `config.json`. This file is ignored by git and will contain your local settings.
+Copy the `config.example.json` file and rename it to `config.json`. You can also create multiple configuration files (e.g., `config-ProjectA.json`) for different projects. All `config*.json` files (except the example) are ignored by git.
 
-Open `config.json` and edit it to match your project:
+Open your configuration file and edit it to match your project:
 
 ```json
 {
@@ -89,7 +89,17 @@ Open `config.json` and edit it to match your project:
     "Generate": true,
     "MasterProjectDirectory": "C:/Path/To/Your/MasterExampleProject_UE5.1",
     "GenerateCppExample": true,
-    "GenerateBlueprintExample": true
+    "GenerateBlueprintExample": true,
+    "ExcludeFiles": [
+      "Docs/",
+      "*.log"
+    ],
+    "ExcludeFolders": [
+      "Plugins/AnotherPlugin/"
+    ],
+    "ExcludePluginsFromExample": [
+      "MyOtherPlugin"
+    ]
   },
 
   "CloudUpload": {
@@ -141,6 +151,9 @@ Once configured, run the master script from a PowerShell terminal in the root of
 
 # Dry run to see what would be built without executing
 .\run_pipeline.ps1 -DryRun
+
+# Run with a custom config file
+.\run_pipeline.ps1 -ConfigPath "config-MyOtherPlugin.json"
 ```
 
 The script will execute all configured tasks, creating plugin packages and version-specific example projects in your configured output folder (e.g., `Builds/`).

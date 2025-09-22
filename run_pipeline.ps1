@@ -25,13 +25,20 @@ param (
     [switch]$SkipValidation,
 
     [Parameter(Mandatory=$false)]
-    [switch]$UseCache
+    [switch]$UseCache,
+
+    [Parameter(Mandatory=$false)]
+    [string]$ConfigPath = "config.json"
 )
 
 # --- PREPARATION ---
 $ScriptDir = $PSScriptRoot
 $LogDir = Join-Path -Path $PSScriptRoot -ChildPath "Logs"
-$ConfigPath = Join-Path -Path $PSScriptRoot -ChildPath "config.json"
+
+# Resolve ConfigPath relative to script root if it's not an absolute path
+if (-not ([System.IO.Path]::IsPathRooted($ConfigPath))) {
+    $ConfigPath = Join-Path -Path $PSScriptRoot -ChildPath $ConfigPath
+}
 
 if (-not (Test-Path $ConfigPath)) {
     Write-Error "Configuration file (config.json) not found at '$ConfigPath'."
@@ -117,14 +124,14 @@ try {
             Write-Host "`n[TASK 1/3] Skipping plugin packaging for $EngineVersion (SkipPluginBuild is true in config)." -ForegroundColor Yellow
         } else {
             Write-Host "`n[TASK 1/3] Running plugin packaging script for $EngineVersion..." -ForegroundColor Cyan
-            & "$ScriptDir/Tools/package_fast.ps1" -OutputDirectory $FinalOutputDir -EngineVersion $EngineVersion -UseCache:$UseCache
+            & "$ScriptDir/Tools/package_fast.ps1" -OutputDirectory $FinalOutputDir -EngineVersion $EngineVersion -UseCache:$UseCache -ConfigPath $ConfigPath
             if ($LASTEXITCODE -ne 0) { throw "Plugin packaging failed for $EngineVersion." }
         }
 
         # --- 2. PACKAGE EXAMPLE PROJECTS ---
         if ($Config.ExampleProject -and $Config.ExampleProject.Generate) {
             Write-Host "`n[TASK 2/3] Running example project packaging script for $EngineVersion..." -ForegroundColor Cyan
-            & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirectory $TempStagingDir -FinalOutputDir $FinalOutputDir -EngineVersion $EngineVersion -UseCache:$UseCache
+            & "$ScriptDir/Tools/package_example_project.ps1" -OutputDirectory $TempStagingDir -FinalOutputDir $FinalOutputDir -EngineVersion $EngineVersion -UseCache:$UseCache -ConfigPath $ConfigPath
             if ($LASTEXITCODE -ne 0) { throw "Example project packaging failed for $EngineVersion." }
         } else {
             Write-Host "`n[TASK 2/3] Skipping example project generation for $EngineVersion (disabled in config)." -ForegroundColor Yellow
@@ -137,7 +144,7 @@ try {
         # Copy logs to the final output directory for archival and upload
         Write-Host "Copying logs to $FinalOutputDir..." -ForegroundColor Cyan
         Copy-Item -Path $LogDir -Destination $FinalOutputDir -Recurse -Force
-        & "$ScriptDir/Tools/upload_to_cloud.ps1" -SourceDirectory $FinalOutputDir
+        & "$ScriptDir/Tools/upload_to_cloud.ps1" -SourceDirectory $FinalOutputDir -ConfigPath $ConfigPath
         if ($LASTEXITCODE -ne 0) { throw "Cloud upload failed." }
     } else {
         Write-Host "`n[TASK 3/3] Skipping cloud upload (disabled in config)." -ForegroundColor Yellow

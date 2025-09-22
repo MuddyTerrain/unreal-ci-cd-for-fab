@@ -16,11 +16,15 @@
     "Generate": true,
     "MasterProjectDirectory": "C:/Path/To/Your/MasterExampleProject_UE5.1",
     "ExcludePlugin": true,
+    "ExcludePluginsFromExample": [ "AnotherPlugin" ],
     "GenerateCppExample": true,
     "GenerateBlueprintExample": true,
     "ExcludeFiles": [
       "Docs/",
       "*.log"
+    ],
+    "ExcludeFolders": [
+      "Plugins/AnotherPlugin/"
     ],
     "BlueprintOnlyExcludeFolders": [
       "Source"
