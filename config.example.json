@@ -41,6 +41,7 @@
 
   "BuildOptions": {
     "_comment": "Advanced options for debugging the pipeline.",
-    "SkipPluginBuild": false
+    "SkipPluginBuild": false,
+    "FastMode": false
   }
 }

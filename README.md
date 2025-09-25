@@ -68,9 +68,10 @@ Before configuring, ensure your system meets all requirements:
 
 ### 2. Create Your Configuration
 
-Copy the `config.example.json` file and rename it to `config.json`. You can also create multiple configuration files (e.g., `config-ProjectA.json`) for different projects. All `config*.json` files (except the example) are ignored by git.
+Copy `config.example.json` to `config.json`. This file is your central control panel. All `config*.json` files (except the example) are ignored by git, so you can create multiple configurations for different projects (e.g., `config-MyPlugin.json`).
 
-Open your configuration file and edit it to match your project:
+#### Main Configuration
+Here is a complete example with detailed explanations below.
 
 ```json
 {
@@ -78,27 +79,22 @@ Open your configuration file and edit it to match your project:
   "PluginSourceDirectory": "C:/Path/To/Your/PluginSource",
   "OutputDirectory": "./Builds",
   "UnrealEngineBasePath": "C:/Program Files/Epic Games",
-  "EngineVersions": [
-    "5.1",
-    "5.2",
-    "5.3",
-    "5.4"
-  ],
+  "EngineVersions": [ "5.1", "5.2", "5.3", "5.4" ],
 
   "ExampleProject": {
     "Generate": true,
     "MasterProjectDirectory": "C:/Path/To/Your/MasterExampleProject_UE5.1",
     "GenerateCppExample": true,
     "GenerateBlueprintExample": true,
-    "ExcludeFiles": [
-      "Docs/",
-      "*.log"
-    ],
+    "ExcludePluginsFromExample": [ "MyOtherPlugin" ],
     "ExcludeFolders": [
+      "Content/SomeMapOrAsset/",
       "Plugins/AnotherPlugin/"
     ],
-    "ExcludePluginsFromExample": [
-      "MyOtherPlugin"
+    "ExcludeFiles": [
+      "Docs/",
+      "*.log",
+      "MySecretFile.txt"
     ]
   },
 
@@ -110,11 +106,35 @@ Open your configuration file and edit it to match your project:
   },
 
   "BuildOptions": {
-    "_comment": "Advanced options for debugging the pipeline.",
+    "_comment": "Advanced options for debugging and speed.",
+    "FastMode": false,
     "SkipPluginBuild": false
   }
 }
 ```
+
+#### Configuration Details
+
+*   **`PluginName`**: The exact name of your plugin (without the `.uplugin` extension).
+*   **`PluginSourceDirectory`**: Absolute path to your plugin's source code folder.
+*   **`OutputDirectory`**: The folder where final `.zip` files will be saved.
+*   **`UnrealEngineBasePath`**: Path to the directory containing all your `UE_X.X` engine installations.
+*   **`EngineVersions`**: An array of engine versions you want to build for.
+
+##### `ExampleProject` Section
+This section is crucial for packaging a sample project alongside your plugin.
+
+*   **`Generate`**: If `true`, the pipeline will generate an example project.
+*   **`MasterProjectDirectory`**: The absolute path to your master example project, which must be saved in the *oldest* engine version you support.
+*   **`ExcludePluginsFromExample`**: **(Important)** A list of plugin names to completely remove from the example project. This is essential if your example project contains multiple plugins (e.g., your main plugin and a companion plugin) but you only want to ship the example with one. The script will both remove the plugin's folder and disable it in the `.uproject` file.
+*   **`ExcludeFolders`**: A list of folders to delete from the example project during packaging. This is useful for removing content that is not relevant to the final example, such as test maps, developer-only assets, or content related to an excluded plugin. Paths should be relative to the project root (e.g., `Content/Developer`).
+*   **`ExcludeFiles`**: A list of files to delete from the example project. Supports wildcards (e.g., `*.log`).
+
+##### `BuildOptions` Section
+Advanced options for controlling the pipeline's behavior.
+
+*   **`FastMode`**: **(Recommended)** If set to `true`, enables a highly optimized build process. It compiles the plugin and example project C++ code together in a single step, drastically reducing build times. If `false`, it uses the original, slower method of compiling the plugin separately before compiling the example project.
+*   **`SkipPluginBuild`**: (Standard Mode Only) If `true`, skips the initial plugin packaging step. Useful for debugging the example project packaging in isolation.
 
 ### 2. (Optional) Configure Cloud Uploads
 
@@ -161,17 +181,18 @@ The script will execute all configured tasks, creating plugin packages and versi
 ## Features
 
 * **Modular & Config-Driven**: A master script (`run_pipeline.ps1`) orchestrates the entire process based on settings in a single `config.json` file.
+* **Optimized Fast Mode**: A `FastMode` option in the config dramatically speeds up builds by compiling the plugin and example project in a single, combined step.
 * **Time-Saving Cache**: Use the `-UseCache` flag to skip building any plugin or example project versions that already exist in the output directory. Perfect for iterating on a single engine version.
 * **Multi-Version Plugin Packaging**: Automatically packages your source code plugin for all specified Unreal Engine versions.
 * **Automated Example Project Generation**:
   * Implements a "Develop Low, Upgrade High" workflow.
-  * Takes a single master example project (from your oldest supported engine version) and automatically generates upgraded, version-specific copies for all newer engines.
+  * Takes a single master example project and automatically generates upgraded, version-specific copies for all newer engines.
+  * Provides powerful exclusion options (`ExcludePluginsFromExample`, `ExcludeFolders`, `ExcludeFiles`) to precisely control the contents of the final packaged example.
   * Can create both a full C++ example and a stripped, Blueprint-only version.
 * **Optional Cloud Uploads**: Automatically uploads all generated `.zip` files to a cloud provider of your choice using rclone.
 * **Clean & Compliant Packaging**: Creates clean, marketplace-ready zip archives, excluding all temporary files like `Binaries`, `Intermediate`, and `Saved` folders, as per marketplace guidelines.
 * **Detailed Logging**: Generates separate logs for each task in a `Logs/` directory in the project root, making it easy to debug failures.
 * **Automatic Cleanup**: All temporary projects and build files are deleted after each run.
-* **Debug Options**: The `config.json` includes a `BuildOptions` section that allows you to skip certain parts of the pipeline for faster testing and debugging (e.g., `SkipPluginBuild`).
 
 
 ## Understanding rclone (For Cloud Uploads)
