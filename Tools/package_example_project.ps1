@@ -166,6 +166,19 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
             }
         }
         
+        # --- 1.6. EXCLUDE SPECIFIED FOLDERS (ROBUST) ---
+        $CurrentStage = "EXCLUDE_FOLDERS"
+        if ($Config.ExampleProject.ExcludeFolders -and $Config.ExampleProject.ExcludeFolders.Count -gt 0) {
+            Write-Host "[1.6/7] Forcefully removing specified folders from example project..."
+            foreach ($FolderToExclude in $Config.ExampleProject.ExcludeFolders) {
+                $FolderDirToRemove = Join-Path -Path $TempProjectDir -ChildPath $FolderToExclude
+                if (Test-Path $FolderDirToRemove) {
+                    Write-Host "Removing excluded folder: $FolderDirToRemove"
+                    Remove-Item -Path $FolderDirToRemove -Recurse -Force
+                }
+            }
+        }
+        
         # --- 2. UPDATE UPLUGIN FILE VERSION ---
         $CurrentStage = "UPDATE_UPLUGIN"
         Write-Host "[2/7] Updating .uplugin file version for UE $CurrentEngineVersion..."
@@ -179,9 +192,9 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
             Write-Host "No .uplugin file found to update." -ForegroundColor Gray
         }
 
-        # --- 3. COMPILE PLUGIN (if included) ---
+        # --- 3. COMPILE PLUGIN ---
+        $CurrentStage = "COMPILE_PLUGIN"
         if (-not $Config.ExampleProject.ExcludePlugin) {
-            $CurrentStage = "COMPILE_PLUGIN"
             Write-Host "[3/7] Compiling plugin for UE $CurrentEngineVersion..."
             
             $PluginDir = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
@@ -191,7 +204,14 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
             & $RunUATPath BuildPlugin -Plugin="$PluginUpluginPath" -Package="$PluginDir\Packages" -TargetPlatforms=Win64 -Rocket | Tee-Object -FilePath $LogFile -Append
             if ($LASTEXITCODE -ne 0) { throw "Failed to compile plugin for UE $CurrentEngineVersion." }
         } else {
-            Write-Host "[3/7] Skipping plugin compilation (plugin will be excluded from final package)." -ForegroundColor Gray
+            # This condition is now only for the final package, but we still need to compile the plugin for the example to work.
+            Write-Host "[3/7] Compiling plugin for UE $CurrentEngineVersion (required for example project)..."
+            $PluginDir = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
+            if (-not (Test-Path $PluginUpluginPath)) { throw "Plugin .uplugin file not found at: $PluginUpluginPath" }
+            
+            $RunUATPath = Join-Path -Path $EnginePath -ChildPath "Engine\Build\BatchFiles\RunUAT.bat"
+            & $RunUATPath BuildPlugin -Plugin="$PluginUpluginPath" -Package="$PluginDir\Packages" -TargetPlatforms=Win64 -Rocket | Tee-Object -FilePath $LogFile -Append
+            if ($LASTEXITCODE -ne 0) { throw "Failed to compile plugin for UE $CurrentEngineVersion." }
         }
 
         # --- 4. BUILD PROJECT (to avoid popups) ---

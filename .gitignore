@@ -28,6 +28,7 @@ Saved/
 /Build*/
 /ExampleProjectBuild_*/
 /Logs/
+/.tmp/
 
 # Ignore user configuration files, but not the example
 config*.json

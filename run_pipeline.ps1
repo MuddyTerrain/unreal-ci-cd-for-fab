@@ -64,8 +64,7 @@ $GlobalSuccess = $true
 
 # Define final and temporary directories
 $FinalOutputDir = Join-Path -Path $ScriptDir -ChildPath $Config.OutputDirectory
-$Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
-$TempStagingDir = Join-Path -Path $ScriptDir -ChildPath ".temp_stage_$Timestamp"
+$TempStagingDir = Join-Path -Path $ScriptDir -ChildPath ".tmp"
 
 # --- DRY RUN MODE ---
 if ($DryRun) {
@@ -101,11 +100,14 @@ if ($DryRun) {
     exit 0
 }
 
-# Create directories for the actual run
+# Create and clean directories for the actual run
+if (Test-Path $TempStagingDir) {
+    Write-Host "Removing existing temporary directory..." -ForegroundColor Gray
+    Remove-Item -Path $TempStagingDir -Recurse -Force
+}
 New-Item -ItemType Directory -Path $FinalOutputDir -Force | Out-Null
 New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
 New-Item -ItemType Directory -Path $TempStagingDir -Force | Out-Null
-Write-Host "Using temporary staging directory: $TempStagingDir" -ForegroundColor Gray
 
 # --- MAIN EXECUTION ---
 Write-Host "=================================================================" -ForegroundColor Magenta
