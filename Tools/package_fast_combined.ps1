@@ -187,8 +187,9 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
         
         $PluginRootInStage = Join-Path -Path $TempPluginStageDir -ChildPath $Config.PluginName
         
-        $ExcludePluginCopy = @( ".git", ".vs", "Binaries", "Build", "Intermediate", "Saved", "DerivedDataCache", "__pycache__", ".vscode", ".idea", "Packages" )
-        robocopy $Config.PluginSourceDirectory $PluginRootInStage /E /XD $ExcludePluginCopy /NFL /NDL /NJH /NJS /nc /ns /np
+        $ExcludePluginCopyDirs = @( ".git", ".github", ".vs", "Binaries", "Build", "Intermediate", "Saved", "DerivedDataCache", "__pycache__", ".vscode", ".idea", "Packages" )
+        $ExcludePluginCopyFiles = @( "LICENSE", "LICENSE.md" )
+        robocopy $Config.PluginSourceDirectory $PluginRootInStage /E /XD $ExcludePluginCopyDirs /XF $ExcludePluginCopyFiles /NFL /NDL /NJH /NJS /nc /ns /np
         if ($LASTEXITCODE -gt 7) { throw "Failed to copy plugin source for zipping." }
 
         $StagedUplugin = Join-Path -Path $PluginRootInStage -ChildPath "$($Config.PluginName).uplugin"
@@ -219,7 +220,7 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
         # C++ Example
         if ($Config.ExampleProject.GenerateCppExample) {
             # Prep for C++ packaging (minimal cleaning)
-            "Intermediate", "Saved", ".vs", "DerivedDataCache" | ForEach-Object {
+            "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Plugins" | ForEach-Object {
                 $pathToRemove = Join-Path $TempProjectDir $_
                 if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
             }
@@ -230,7 +231,7 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
         # Blueprint Example
         if ($Config.ExampleProject.GenerateBlueprintExample) {
             # Prep for BP packaging (more cleaning)
-            "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Source" | ForEach-Object {
+            "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Source", "Plugins" | ForEach-Object {
                 $pathToRemove = Join-Path $TempProjectDir $_ 
                 if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
             }
