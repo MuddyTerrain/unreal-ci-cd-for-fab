@@ -201,69 +201,74 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
         Remove-Item -Recurse -Force -Path $TempPluginStageDir
         Write-Host "Plugin source zip created at: $FinalPluginZipPath" -ForegroundColor Green
 
-        # --- 4. UPGRADE PROJECT ---
-        $CurrentStage = "UPGRADE"
-        Write-Host "[4/5] Upgrading project assets for UE $CurrentEngineVersion..."
-        $UnrealEditorPath = Join-Path -Path $EnginePath -ChildPath "Engine/Binaries/Win64/UnrealEditor-Cmd.exe"
+        if ($Config.ExampleProject -and $Config.ExampleProject.Generate) {
+            # --- 4. UPGRADE PROJECT ---
+            $CurrentStage = "UPGRADE"
+            Write-Host "[4/5] Upgrading project assets for UE $CurrentEngineVersion..."
+            $UnrealEditorPath = Join-Path -Path $EnginePath -ChildPath "Engine/Binaries/Win64/UnrealEditor-Cmd.exe"
 
-        $UProjectJsonOnTemp = Get-Content -Raw -Path $TempUProjectPath | ConvertFrom-Json
-        $UProjectJsonOnTemp.EngineAssociation = $CurrentEngineVersion
-        $UProjectJsonOnTemp | ConvertTo-Json -Depth 10 | Out-File -FilePath $TempUProjectPath -Encoding utf8
+            $UProjectJsonOnTemp = Get-Content -Raw -Path $TempUProjectPath | ConvertFrom-Json
+            $UProjectJsonOnTemp.EngineAssociation = $CurrentEngineVersion
+            $UProjectJsonOnTemp | ConvertTo-Json -Depth 10 | Out-File -FilePath $TempUProjectPath -Encoding utf8
 
-        & $UnrealEditorPath "$TempUProjectPath" -run=ResavePackages -allowcommandletrendering -autocheckout -projectonly | Tee-Object -FilePath $LogFile -Append
-        if ($LASTEXITCODE -ne 0) { throw "Failed to resave/upgrade packages." }
+            & $UnrealEditorPath "$TempUProjectPath" -run=ResavePackages -allowcommandletrendering -autocheckout -projectonly | Tee-Object -FilePath $LogFile -Append
+            if ($LASTEXITCODE -ne 0) { throw "Failed to resave/upgrade packages." }
 
-        # --- 5. PACKAGE EXAMPLE PROJECT(S) ---
-        $CurrentStage = "PACKAGE_EXAMPLE"
-        Write-Host "[5/5] Packaging final example project(s)..."
-        
-        # C++ Example
-        if ($Config.ExampleProject.GenerateCppExample) {
-            # Prep for C++ packaging (minimal cleaning)
-            "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Plugins" | ForEach-Object {
-                $pathToRemove = Join-Path $TempProjectDir $_
-                if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
-            }
-            Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalCppZipPath -Force
-            Write-Host "C++ example created at: $FinalCppZipPath" -ForegroundColor Green
-        }
-
-        # Blueprint Example
-        if ($Config.ExampleProject.GenerateBlueprintExample) {
-            # Prep for BP packaging (more cleaning)
-            "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Source", "Plugins" | ForEach-Object {
-                $pathToRemove = Join-Path $TempProjectDir $_ 
-                if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
-            }
-            Remove-Item -Path "$TempProjectDir\*.sln" -ErrorAction SilentlyContinue
-
-            $UProjectJsonBP = Get-Content -Raw -Path $TempUProjectPath | ConvertFrom-Json
-            if ($UProjectJsonBP.PSObject.Properties.Name -contains 'Modules') { $UProjectJsonBP.PSObject.Properties.Remove('Modules') }
-            $UProjectJsonBP | ConvertTo-Json -Depth 10 | Out-File -FilePath $TempUProjectPath -Encoding utf8
-
-            if ($Config.ExampleProject.ExcludePlugin) {
-                $PluginDirToRemove = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
-                if (Test-Path $PluginDirToRemove) { Remove-Item -Path $PluginDirToRemove -Recurse -Force }
-            } else {
-                $PluginDir = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
-                Remove-Item -Path "$PluginDir\Source" -Recurse -Force -ErrorAction SilentlyContinue
-                $PluginUpluginPath = Join-Path -Path $PluginDir -ChildPath "$($Config.PluginName).uplugin"
-                if (Test-Path $PluginUpluginPath) {
-                    $PluginJsonBP = Get-Content -Raw -Path $PluginUpluginPath | ConvertFrom-Json
-                    if ($PluginJsonBP.PSObject.Properties.Name -contains 'Modules') { $PluginJsonBP.PSObject.Properties.Remove('Modules') }
-                    $PluginJsonBP | ConvertTo-Json -Depth 10 | Out-File -FilePath $PluginUpluginPath -Encoding utf8
-                }
-            }
+            # --- 5. PACKAGE EXAMPLE PROJECT(S) ---
+            $CurrentStage = "PACKAGE_EXAMPLE"
+            Write-Host "[5/5] Packaging final example project(s)..."
             
-            if ($Config.ExampleProject.BlueprintOnlyExcludeFolders) {
-                foreach ($ExcludeFolder in $Config.ExampleProject.BlueprintOnlyExcludeFolders) {
-                    $FolderToRemove = Join-Path -Path $TempProjectDir -ChildPath $ExcludeFolder
-                    if (Test-Path $FolderToRemove) { Remove-Item -Path $FolderToRemove -Recurse -Force }
+            # C++ Example
+            if ($Config.ExampleProject.GenerateCppExample) {
+                # Prep for C++ packaging (minimal cleaning)
+                "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Plugins" | ForEach-Object {
+                    $pathToRemove = Join-Path $TempProjectDir $_
+                    if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
                 }
+                Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalCppZipPath -Force
+                Write-Host "C++ example created at: $FinalCppZipPath" -ForegroundColor Green
             }
-            
-            Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalBpZipPath -Force
-            Write-Host "Blueprint example created at: $FinalBpZipPath" -ForegroundColor Green
+
+            # Blueprint Example
+            if ($Config.ExampleProject.GenerateBlueprintExample) {
+                # Prep for BP packaging (more cleaning)
+                "Binaries", "Intermediate", "Saved", ".vs", "DerivedDataCache", "Source", "Plugins" | ForEach-Object {
+                    $pathToRemove = Join-Path $TempProjectDir $_ 
+                    if(Test-Path $pathToRemove) { Remove-Item -Recurse -Force $pathToRemove -ErrorAction SilentlyContinue }
+                }
+                Remove-Item -Path "$TempProjectDir\*.sln" -ErrorAction SilentlyContinue
+
+                $UProjectJsonBP = Get-Content -Raw -Path $TempUProjectPath | ConvertFrom-Json
+                if ($UProjectJsonBP.PSObject.Properties.Name -contains 'Modules') { $UProjectJsonBP.PSObject.Properties.Remove('Modules') }
+                $UProjectJsonBP | ConvertTo-Json -Depth 10 | Out-File -FilePath $TempUProjectPath -Encoding utf8
+
+                if ($Config.ExampleProject.ExcludePlugin) {
+                    $PluginDirToRemove = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
+                    if (Test-Path $PluginDirToRemove) { Remove-Item -Path $PluginDirToRemove -Recurse -Force }
+                } else {
+                    $PluginDir = Join-Path -Path $TempProjectDir -ChildPath "Plugins\$($Config.PluginName)"
+                    Remove-Item -Path "$PluginDir\Source" -Recurse -Force -ErrorAction SilentlyContinue
+                    $PluginUpluginPath = Join-Path -Path $PluginDir -ChildPath "$($Config.PluginName).uplugin"
+                    if (Test-Path $PluginUpluginPath) {
+                        $PluginJsonBP = Get-Content -Raw -Path $PluginUpluginPath | ConvertFrom-Json
+                        if ($PluginJsonBP.PSObject.Properties.Name -contains 'Modules') { $PluginJsonBP.PSObject.Properties.Remove('Modules') }
+                        $PluginJsonBP | ConvertTo-Json -Depth 10 | Out-File -FilePath $PluginUpluginPath -Encoding utf8
+                    }
+                }
+                
+                if ($Config.ExampleProject.BlueprintOnlyExcludeFolders) {
+                    foreach ($ExcludeFolder in $Config.ExampleProject.BlueprintOnlyExcludeFolders) {
+                        $FolderToRemove = Join-Path -Path $TempProjectDir -ChildPath $ExcludeFolder
+                        if (Test-Path $FolderToRemove) { Remove-Item -Path $FolderToRemove -Recurse -Force }
+                    }
+                }
+                
+                Compress-Archive -Path "$TempProjectDir\*" -DestinationPath $FinalBpZipPath -Force
+                Write-Host "Blueprint example created at: $FinalBpZipPath" -ForegroundColor Green
+            }
+        } else {
+            Write-Host "[4/5] Skipping example project upgrade (disabled in config)." -ForegroundColor Gray
+            Write-Host "[5/5] Skipping example project packaging (disabled in config)." -ForegroundColor Gray
         }
 
     } catch {
@@ -279,3 +284,5 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
         }
     }
 }
+
+exit 0
