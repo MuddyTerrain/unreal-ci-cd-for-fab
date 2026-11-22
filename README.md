@@ -7,10 +7,8 @@ A powerful, modular local CI/CD pipeline for building, packaging, and distributi
 
 This tool automates the tedious process of multi-version support, ensuring your plugin is robust and ready for distribution on marketplaces like Fab.com. It handles plugin packaging, version-specific example project generation, and optional cloud uploads.
 
-> [!WARNING]  
-> This tool is under active development.
-> 1) Do not use it without version control. ⚠️
-> 2) Contributions are welcome, especially for non-windows platforms.🤝
+> [!TIP]
+> Keep your plugin under version control while using it. Contributions are welcome, especially for non-Windows platforms. 🤝
 
 ## Problem Statement 
 Here is snippet from [Fab.com](https://fab.com)'s submission [guidelines](https://support.fab.com/s/article/FAB-TECHNICAL-REQUIREMENTS?language=en_US):  
