@@ -38,3 +38,6 @@ config*.json
 # Ignore executables and archives
 *.exe
 *.zip
+
+# Private Claude Code notes (personal paths/links)
+CLAUDE.local.md

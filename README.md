@@ -139,6 +139,7 @@ Advanced options for controlling the pipeline's behavior.
 
 *   **`FastMode`**: **(Recommended)** If set to `true`, enables a highly optimized build process. It compiles the plugin and example project C++ code together in a single step, drastically reducing build times. If `false`, it uses the original, slower method of compiling the plugin separately before compiling the example project.
 *   **`SkipPluginBuild`**: (Standard Mode Only) If `true`, skips the initial plugin packaging step. Useful for debugging the example project packaging in isolation.
+*   **`MaxParallelActions`**: (Optional) Caps the number of parallel compile actions (e.g. `8`). Use this on machines with limited RAM if builds fail with `VirtualAlloc failed` / "paging file is too small" or MSVC `fatal error C1001: Internal compiler error` (both seen with UE 5.8 on 16 GB machines).
 *   **`UseClang`**: If `true`, uses clang-cl instead of MSVC for compilation. This matches Fab's Clang-based review more closely and catches warnings like `-Wshadow` that MSVC misses. Requires the Clang VS components (see Prerequisites). May not work with UE 5.1-5.3 due to engine header incompatibilities.
 
 ### 2. (Optional) Configure Cloud Uploads

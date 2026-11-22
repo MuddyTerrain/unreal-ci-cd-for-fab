@@ -146,9 +146,16 @@ foreach ($CurrentEngineVersion in $VersionsToProcess) {
             $CompilerXml = "        <CompilerVersion>$($ToolchainVersion)</CompilerVersion>"
         }
 
+        # Optional cap on parallel compile actions (helps low-RAM machines avoid UBA/MSVC out-of-memory failures)
+        $ParallelXml = ""
+        if ($Config.BuildOptions -and $Config.BuildOptions.PSObject.Properties.Name -contains 'MaxParallelActions' -and $Config.BuildOptions.MaxParallelActions -gt 0) {
+            $ParallelXml = "    <BuildConfiguration>`n        <MaxParallelActions>$($Config.BuildOptions.MaxParallelActions)</MaxParallelActions>`n    </BuildConfiguration>"
+        }
+
         @"
 <?xml version="1.0" encoding="utf-8" ?>
 <Configuration xmlns="https://www.unrealengine.com/BuildConfiguration">
+$ParallelXml
     <WindowsPlatform>
 $CompilerXml
     </WindowsPlatform>
