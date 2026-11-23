@@ -222,7 +222,7 @@ $CompilerXml
         $PluginRootInStage = Join-Path -Path $TempPluginStageDir -ChildPath $Config.PluginName
         
         $ExcludePluginCopyDirs = @( ".git", ".github", ".vs", "Binaries", "Build", "Intermediate", "Saved", "DerivedDataCache", "__pycache__", ".vscode", ".idea", "Packages", ".Claude" )
-        $ExcludePluginCopyFiles = @( "LICENSE", "LICENSE.md" )
+        $ExcludePluginCopyFiles = @( "LICENSE", "LICENSE.md", "secureconfig*.bin", "feed.txt" )
         robocopy $Config.PluginSourceDirectory $PluginRootInStage /E /XD $ExcludePluginCopyDirs /XF $ExcludePluginCopyFiles /NFL /NDL /NJH /NJS /nc /ns /np
         if ($LASTEXITCODE -gt 7) { throw "Failed to copy plugin source for zipping." }
 
@@ -230,6 +230,11 @@ $CompilerXml
         $UpluginJson = Get-Content -Raw -Path $StagedUplugin | ConvertFrom-Json
         $UpluginJson.EngineVersion = "$($CurrentEngineVersion).0"
         $UpluginJson | ConvertTo-Json -Depth 10 | Out-File -FilePath $StagedUplugin -Encoding utf8
+
+        # Safety net: never ship API keys or other secrets inside a plugin zip
+        $SecretPatterns = @("secureconfig*.bin", "feed.txt", "*.pem", ".env")
+        $Leaks = Get-ChildItem -Path $PluginRootInStage -Recurse -File -Force -Include $SecretPatterns -ErrorAction SilentlyContinue
+        if ($Leaks) { throw "Refusing to package secret files: $(($Leaks | ForEach-Object { $_.FullName }) -join ', ')" }
 
         Compress-Archive -Path "$PluginRootInStage\*" -DestinationPath $FinalPluginZipPath -Force
         Remove-Item -Recurse -Force -Path $TempPluginStageDir

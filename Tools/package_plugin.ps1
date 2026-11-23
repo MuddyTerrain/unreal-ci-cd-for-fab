@@ -194,7 +194,9 @@ $CompilerXml
         
         # Use Robocopy for efficient copying with exclusions
         Write-Host "Copying plugin source (excluding build artifacts)..."
-        robocopy $Config.PluginSourceDirectory $HostPluginDir /E /XD $ExcludeDirs /NFL /NDL /NJH /NJS /nc /ns /np
+        # Never copy API key files / secrets into the build (they live in the plugin's Content folder on dev machines)
+        $ExcludeSecretFiles = @("secureconfig*.bin", "feed.txt")
+        robocopy $Config.PluginSourceDirectory $HostPluginDir /E /XD $ExcludeDirs /XF $ExcludeSecretFiles /NFL /NDL /NJH /NJS /nc /ns /np
         # Note: Robocopy exit codes 0-7 are success, 8+ are errors
         if ($LASTEXITCODE -gt 7) { 
             throw "Failed to copy plugin source. Robocopy exit code: $LASTEXITCODE" 
@@ -231,6 +233,11 @@ $CompilerXml
         }
         Copy-Item -Force -Path $PackagedUpluginFile.FullName -Destination (Join-Path -Path $PluginRootInStage -ChildPath $PackagedUpluginFile.Name)
         
+        # Safety net: never ship API keys or other secrets inside a plugin zip
+        $SecretPatterns = @("secureconfig*.bin", "feed.txt", "*.pem", ".env")
+        $Leaks = Get-ChildItem -Path $CleanedPluginStageDir -Recurse -File -Force -Include $SecretPatterns -ErrorAction SilentlyContinue
+        if ($Leaks) { throw "Refusing to package secret files: $(($Leaks | ForEach-Object { $_.FullName }) -join ', ')" }
+
         # Robust retry loop to handle file locking issues during zipping.
         $ItemToZip = Get-ChildItem -Path $CleanedPluginStageDir | Select-Object -First 1
         if (-not $ItemToZip) {
